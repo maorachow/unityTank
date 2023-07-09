@@ -5,6 +5,9 @@ using UnityEngine.Networking;
  
 public class playermove : MonoBehaviour 
 {
+    public int effectEatenId=-1;
+    public float effectTime=0f;
+    public bool bulletIsEnchanted=false;
     public SpriteRenderer sr;
     public int playerdirection=0;
     public Vector2 playerVec;
@@ -18,8 +21,9 @@ public class playermove : MonoBehaviour
     public GameObject bullet;
     public GameObject bulletPos;
     public float bulletCD;
+    public GameObject enchantedBullet;
     public static Transform playerPos;
-    public static bool isWudi=false;
+    public bool isWudi=false;
     public float WudiTime;
      public GameObject hugeExlplo;
     public SpriteRenderer shooterSR;   
@@ -36,18 +40,18 @@ public class playermove : MonoBehaviour
         tankDown=new Sprite[3];
         tankRight=new Sprite[3];
         tankLeft=new Sprite[3];
-tankUp[0]=Resources.Load<Sprite>("textures/tank");
-tankUp[1]=Resources.Load<Sprite>("textures/tank1");
-tankDown[0]=Resources.Load<Sprite>("textures/tankx");
-tankDown[1]=Resources.Load<Sprite>("textures/tank1x");
-tankRight[0]=Resources.Load<Sprite>("textures/tanky");
-tankRight[1]=Resources.Load<Sprite>("textures/tank1y");
-tankLeft[0]=Resources.Load<Sprite>("textures/tankz");
-tankLeft[1]=Resources.Load<Sprite>("textures/tank1z");
+        tankUp[0]=Resources.Load<Sprite>("textures/tank");
+        tankUp[1]=Resources.Load<Sprite>("textures/tank1");
+        tankDown[0]=Resources.Load<Sprite>("textures/tankx");
+        tankDown[1]=Resources.Load<Sprite>("textures/tank1x");
+        tankRight[0]=Resources.Load<Sprite>("textures/tanky");
+        tankRight[1]=Resources.Load<Sprite>("textures/tank1y");
+        tankLeft[0]=Resources.Load<Sprite>("textures/tankz");
+        tankLeft[1]=Resources.Load<Sprite>("textures/tank1z");
         bulletCD=10f;
   //  bullet=Resources.Load<GameObject>("prefabs/bullet");
      sr=GetComponent<SpriteRenderer>();
-     
+     enchantedBullet=Resources.Load<GameObject>("prefabs/enchantedbullet");
      playerrigidbody=GetComponent<Rigidbody2D>();
      shooter=GameObject.Find("playerbulletshooter");
      bulletPos=GameObject.Find("bulletPos");
@@ -74,9 +78,35 @@ void DiretionChange(GameObject gameobject){
         gameobject.transform.eulerAngles-=new Vector3(0,0,shooterSensi*Input.GetAxis("Rotate")*Time.deltaTime);
 }
    
-    
+void DirectionChangeByMouse(GameObject gameObject){
+        Vector3 ms = Input.mousePosition;
+        ms = Camera.main.ScreenToWorldPoint(ms);
+       
+        Vector3 gunPos = gameObject.transform.position;
+        float fireangle;
+        
+        Vector2 targetDir = ms - gunPos;
+        fireangle = Vector2.Angle(targetDir, Vector3.up);
+        if (ms.x > gunPos.x)
+        {
+            fireangle = -fireangle;
+        }
+        gameObject.transform.eulerAngles = new Vector3(0, 0, fireangle);
+
+}
     void Update()
     {
+        if(effectTime>0f){
+            effectTime-=Time.deltaTime;
+            switch(effectEatenId){
+                case 0:WudiTime=effectTime;break;
+                case 1:bulletIsEnchanted=true;break;
+            }
+        }else{
+
+            bulletIsEnchanted=false;
+            effectEatenId=-1;
+        }
 playerPos=transform;
 if(playerspeed<10f){
     playerspeed+=Time.deltaTime*55f;
@@ -101,10 +131,23 @@ if(WudiTime>0f){
     }
         
         playerVec=new Vector2(Input.GetAxis("Horizontal"),Input.GetAxis("Vertical"));
-        DiretionChange(shooter);
+        if(WorldGen.isUsingKeboardShooterControl==true){
+        DiretionChange(shooter);    
+        }else{
+            DirectionChangeByMouse(shooter);
+        }
+        
       if(Input.GetButton("Jump")&&bulletCD<=0f){
-        GameObject a=Instantiate(bullet,bulletPos.transform.position,shooter.transform.rotation);
+        if(bulletIsEnchanted==true){
+            GameObject b=Instantiate(enchantedBullet,bulletPos.transform.position,shooter.transform.rotation);
+       b.GetComponent<enchantedBulletBehav>().fireSource=this.gameObject;
+       b.GetComponent<enchantedBulletBehav>().originMovitation=playerrigidbody.velocity;
+        }else{
+             GameObject a=Instantiate(bullet,bulletPos.transform.position,shooter.transform.rotation);
        a.GetComponent<bulletBehav>().fireSource=this.gameObject;
+       a.GetComponent<bulletBehav>().originMovitation=playerrigidbody.velocity;   
+        }
+    
         //Instantiate(bullet,bulletPos.transform.position,shooter.transform.rotation);
         playerspeed-=6f;
         bulletCD+=1.5f;

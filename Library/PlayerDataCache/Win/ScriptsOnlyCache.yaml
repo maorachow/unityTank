@@ -7,6 +7,8 @@ ScriptsOnlyBuild:
     - WorldGen
     - bulletBehav
     - cameraSizeFit
+    - effectItemBeh
+    - enchantedBulletBehav
     - enemymove
     - explosionEffectBeh
     - gameOverUIBeh
@@ -46,8 +48,12 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.CanvasScaler
     - UnityEngine.UI.GraphicRaycaster
     - UnityEngine.UI.Image
+    - UnityEngine.UI.Mask
+    - UnityEngine.UI.ScrollRect
+    - UnityEngine.UI.Scrollbar
     - UnityEngine.UI.Slider
     - UnityEngine.UI.Text
+    - UnityEngine.UI.Toggle
   sceneClasses:
     Assets/Scenes/DefaultMatchScene.unity:
     - Class: 1
@@ -87,11 +93,11 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 3480}
     - Class: 114
-      Script: {instanceID: 5230}
+      Script: {instanceID: 5234}
     - Class: 114
-      Script: {instanceID: 5302}
+      Script: {instanceID: 5306}
     - Class: 114
-      Script: {instanceID: 5434}
+      Script: {instanceID: 5438}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -144,6 +150,8 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1534}
     - Class: 114
+      Script: {instanceID: 1658}
+    - Class: 114
       Script: {instanceID: 1734}
     - Class: 114
       Script: {instanceID: 2268}
@@ -164,19 +172,29 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 3356}
     - Class: 114
+      Script: {instanceID: 3370}
+    - Class: 114
       Script: {instanceID: 3464}
     - Class: 114
       Script: {instanceID: 3480}
     - Class: 114
-      Script: {instanceID: 4310}
+      Script: {instanceID: 3966}
     - Class: 114
-      Script: {instanceID: 4674}
+      Script: {instanceID: 4312}
     - Class: 114
-      Script: {instanceID: 4788}
+      Script: {instanceID: 4516}
     - Class: 114
-      Script: {instanceID: 5000}
+      Script: {instanceID: 4542}
     - Class: 114
-      Script: {instanceID: 5262}
+      Script: {instanceID: 4678}
+    - Class: 114
+      Script: {instanceID: 4750}
+    - Class: 114
+      Script: {instanceID: 4792}
+    - Class: 114
+      Script: {instanceID: 5004}
+    - Class: 114
+      Script: {instanceID: 5266}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -276,7 +294,7 @@ ScriptsOnlyBuild:
     className: TMP_FontAsset
   - hash:
       serializedVersion: 2
-      Hash: 28eff51ac4f12dc87a8793fb25b8a93f
+      Hash: 9303e8cfe760aa7481ffdd4e10842e7d
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: WorldGen
@@ -306,13 +324,13 @@ ScriptsOnlyBuild:
     className: PlaymodeTestsController
   - hash:
       serializedVersion: 2
-      Hash: ce85e32bc7d16b3d33fe19c401d2a276
+      Hash: 93de1df0b217346a3528ed88495e0041
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: settingsUIBeh
   - hash:
       serializedVersion: 2
-      Hash: 742336a69c4ebe886b0b6dbd9200da45
+      Hash: e6031e0a8c8e4f2d6f395e42c059009a
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: bulletBehav
@@ -336,7 +354,7 @@ ScriptsOnlyBuild:
     className: IKManager2D
   - hash:
       serializedVersion: 2
-      Hash: a038b3f963957be987791542079e1aef
+      Hash: 765e9a9992354027aff2ad883007b263
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: cameraSizeFit
@@ -534,6 +552,12 @@ ScriptsOnlyBuild:
     className: BaseInput
   - hash:
       serializedVersion: 2
+      Hash: 375eef2a495b040f49ff1b47ba22770f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: effectItemBeh
+  - hash:
+      serializedVersion: 2
       Hash: 18c222bef9ae745ce69ddde9b74337ca
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.EventSystems
@@ -588,7 +612,7 @@ ScriptsOnlyBuild:
     className: SpriteLibrary
   - hash:
       serializedVersion: 2
-      Hash: e8888c6c6ce9ecaf36c043fe26c5e90b
+      Hash: cee4aeb49ebc22313eb40277f90577e8
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: enemymove
@@ -616,6 +640,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: SignalTrack
+  - hash:
+      serializedVersion: 2
+      Hash: e6031e0a8c8e4f2d6f395e42c059009a
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: enchantedBulletBehav
   - hash:
       serializedVersion: 2
       Hash: aba7b2852ef61d175dd9602e7723d5e5
@@ -702,7 +732,7 @@ ScriptsOnlyBuild:
     className: SpriteSkinEntity
   - hash:
       serializedVersion: 2
-      Hash: 99c7e05bd45b15383a2bc911e7ecb728
+      Hash: e0059ef8e461d2e8dc063246430b6835
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: playermove

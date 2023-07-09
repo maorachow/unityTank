@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class bulletBehav : MonoBehaviour
 {public float movespeed;
+public Vector2 originMovitation;
 public GameObject ExploEffect;
 public GameObject hugeExlplo;
 public AudioSource hitSound;
@@ -16,14 +17,15 @@ public Ray2D ray;
     // Start is called before the first frame update
     void Start()
     {
-        movespeed=12f;
+       
+        movespeed=8f;
         ExploEffect=Resources.Load<GameObject>("prefabs/exploeffect");
         leavesCrackAudio=Resources.Load<GameObject>("prefabs/leavescracksound");
         leavesCrackAudio2=Resources.Load<GameObject>("prefabs/leavescracksound2");
- hugeExlplo=Resources.Load<GameObject>("prefabs/hugeexploeffect");
- hitAudio=Resources.Load<GameObject>("prefabs/hitsound");
- exploAudio=Resources.Load<GameObject>("prefabs/explosound");
- AudioClip hitclip = Resources.Load<AudioClip>("textures/hit");
+        hugeExlplo=Resources.Load<GameObject>("prefabs/hugeexploeffect");
+        hitAudio=Resources.Load<GameObject>("prefabs/hitsound");
+        exploAudio=Resources.Load<GameObject>("prefabs/explosound");
+        AudioClip hitclip = Resources.Load<AudioClip>("textures/hit");
 
         hitSound=GetComponent<AudioSource>();
         hitSound.clip=hitclip;
@@ -33,7 +35,7 @@ public Ray2D ray;
     void Update()
     {
 
-   transform.Translate(new Vector2(0f,1f)*movespeed*Time.deltaTime);
+   transform.Translate((new Vector2(0f,1f)+originMovitation*0.01f)*movespeed*Time.deltaTime);
    ray=new Ray2D(transform.position,new Vector2(0f,1f));
    RaycastHit2D info = Physics2D.Raycast(ray.origin, ray.direction,0.1f);
    if(fireSource!=null){
@@ -100,7 +102,7 @@ WorldGen.map[(int)(brickPos.position.x+9.5f),(int)(brickPos.position.y+9.5f)]=0;
       //  Debug.Log("playerhit");
 
     Transform otherPos=other.gameObject.GetComponent<Transform>();
-   if(playermove.isWudi==false){
+   if(other.gameObject.GetComponent<playermove>().isWudi==false){
     Instantiate(exploAudio,transform.position,Quaternion.Euler(0.0f,0.0f,0.0f));
     Instantiate(hugeExlplo,otherPos.position,Quaternion.Euler(0.0f,0.0f,0.0f));
     Destroy(other.gameObject);
@@ -118,7 +120,7 @@ WorldGen.map[(int)(brickPos.position.x+9.5f),(int)(brickPos.position.y+9.5f)]=0;
      //   Debug.Log("enemyhit");
 
    Transform otherPos=other.gameObject.GetComponent<Transform>();
-   if(enemymove.isWudi==false){
+   if(other.gameObject.GetComponent<enemymove>().isWudi==false){
     Instantiate(exploAudio,transform.position,Quaternion.Euler(0.0f,0.0f,0.0f));
     Instantiate(hugeExlplo,otherPos.position,Quaternion.Euler(0.0f,0.0f,0.0f));
     Destroy(other.gameObject);

@@ -49,10 +49,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movespeed: 0
+  originMovitation: {x: 0, y: 0}
   ExploEffect: {fileID: 0}
   hugeExlplo: {fileID: 0}
   hitSound: {fileID: 0}
   hitAudio: {fileID: 0}
+  leavesCrackAudio: {fileID: 0}
+  leavesCrackAudio2: {fileID: 0}
   exploAudio: {fileID: 0}
   fireSource: {fileID: 0}
 --- !u!212 &7051215351364649060
@@ -94,7 +97,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 100
   m_Sprite: {fileID: 21300000, guid: c7a4096698152fd4f86efaa3811c3af4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -130,7 +133,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.01, y: 0.01}
+  m_Size: {x: 0.05, y: 0.05}
   m_EdgeRadius: 0
 --- !u!50 &4888964437542110018
 Rigidbody2D:
@@ -166,10 +169,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movespeed: 3
+  originMovitation: {x: 0, y: 0}
   ExploEffect: {fileID: 6632700992143690786, guid: cd3c6b1616445484a89361b38041654b, type: 3}
   hugeExlplo: {fileID: 0}
   hitSound: {fileID: 0}
   hitAudio: {fileID: 0}
+  leavesCrackAudio: {fileID: 0}
+  leavesCrackAudio2: {fileID: 0}
   exploAudio: {fileID: 0}
   fireSource: {fileID: 0}
 --- !u!82 &-2638806445511650013

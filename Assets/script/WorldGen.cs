@@ -5,10 +5,13 @@ using System.IO;
 using System.Text;
 
 public class WorldGen : MonoBehaviour
-{
+{   
+    public static List<effectItemBeh> effectItemList=new List<effectItemBeh>();
+    public float addEffectItemCD=4f;
    public GameObject brick;
    public GameObject stone;
    public GameObject leaves;
+   public static bool spawnItem=true;
    public static int playerLifeCount=11;
    public static int enemyCount;
    public static int enemyOnWorldCount;
@@ -18,10 +21,12 @@ public class WorldGen : MonoBehaviour
    public static float playerRespawnCD;
    public static bool lose;
    public GameObject playerHome;
+   public GameObject effectItem;
    public GameObject[] enemyHome;
    public static float worldBrickDensity=0.45f;
    public GameObject gameOverUI;
    public static int worldwidth=10;
+   public static bool isUsingKeboardShooterControl=false;
 public static int[,] map=new int[500,500];
 public string worldGenData;
 public string worldBrickDensityString;
@@ -59,6 +64,7 @@ playerLifeCountString=line;
 //worldwidth=int.Parse(worldwidthString);
 //playerLifeCount=int.Parse(playerLifeCountString);
 ///worldBrickDensity=float.Parse(worldBrickDensityString);
+effectItem=Resources.Load<GameObject>("prefabs/effectitem");
 if(worldwidth==0){
     worldwidth=10;
     }
@@ -142,7 +148,31 @@ for(int i = 0; i <2 ; i++) {
         //Instantiate(enemyPrefab,new Vector2(transform.position.x-4.5f,transform.position.y-4.5f),transform.rotation);
        // Instantiate(enemyPrefab,new Vector2(transform.position.x-4.5f,transform.position.y-4.5f),transform.rotation);
     }
+    void AddEffectItem(){
+          while(true){
+            Vector2 randomAddPos=new Vector2(Random.Range(1f,2*worldwidth-1f),Random.Range(1f,2*worldwidth-1f));
+        Ray2D ray=new Ray2D(randomAddPos,new Vector2(0f,1f));
+        RaycastHit2D info = Physics2D.Raycast(ray.origin, ray.direction,0.01f);
+        if(info.collider==null){
+            GameObject a=Instantiate(effectItem,randomAddPos,Quaternion.Euler(0f,0f,0f));
+            a.GetComponent<effectItemBeh>().effectId=(int)Random.Range(0f,1.99f);
+            Debug.Log("suceed");
+            return;
+        }else{
+            Debug.Log("failed");
+            continue;
+        }
+          }
+        
+    }
   void FixedUpdate() {
+
+    addEffectItemCD-=Time.deltaTime;
+
+    if(addEffectItemCD<0f&&effectItemList.Count<=20){
+        AddEffectItem();
+        addEffectItemCD=Random.Range(1f,5f);
+    }
    // Debug.Log(playerRespawnCD);
     if(playerRespawnCD>0f&&tankPlayer==null){
         playerRespawnCD-=Time.deltaTime;

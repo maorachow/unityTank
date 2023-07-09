@@ -14,6 +14,8 @@ public class settingsUIBeh : MonoBehaviour
     public Button saveButton;
     public static GameObject settingsUIObject;
     public static Slider worldWidthSlider;
+  
+    public Toggle isUsingKeboardShooterControlToggle;
     //public StreamWriter worldConfigWriter;
 
     // Start is called before the first frame update
@@ -27,8 +29,8 @@ public class settingsUIBeh : MonoBehaviour
        
 
     } 
-    FileStream fs=new FileStream("gameWorldGenData.txt",FileMode.Truncate);
-        fs.Dispose();
+  //  FileStream fs=new FileStream("gameWorldGenData.txt",FileMode.Truncate);
+   //     fs.Dispose();
         startGameUI.isSettingChanged=true;
         worldWidthText=GameObject.Find("worldWidthText").GetComponent<Text>();
         settingsUIObject=GameObject.Find("settingsMenu");
@@ -45,17 +47,20 @@ public class settingsUIBeh : MonoBehaviour
          worldWidthText.text=(2*(worldWidthSlider.value)).ToString()+" * "+(2*(worldWidthSlider.value)).ToString();
          playerLifeText.text=playerLifeSlider.value.ToString();
          worldBrickDensityText.text=worldBrickDensitySlider.value.ToString();
-
+        isUsingKeboardShooterControlToggle=GameObject.Find("isUsingKeyboardShooterControl").GetComponent<Toggle>();
+        isUsingKeboardShooterControlToggle.onValueChanged.AddListener((bool isOn)=> { isUsingKeboardShooterControlToggleOnClick(isUsingKeboardShooterControlToggle,isOn); });
 
     }
-    void saveButtonOnClick(){
+    public void saveButtonOnClick(){
 
 
    
     this.gameObject.SetActive(false);
     
 }
-
+    void isUsingKeboardShooterControlToggleOnClick(Toggle toggle,bool isOn){
+        WorldGen.isUsingKeboardShooterControl=isOn;
+    }
     void playerLifeSliderChanged(float a){
 playerLifeText.text=playerLifeSlider.value.ToString();
 WorldGen.playerLifeCount=(int)playerLifeSlider.value;

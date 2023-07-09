@@ -13,9 +13,11 @@ public class gameOverUIBeh : MonoBehaviour
     // Start is called before the first frame update
     void OnEnable()
     {
-        
+        if(WorldGen.lose==false){
         winUseTime=GameObject.Find("winUsedTime").GetComponent<Text>();
         winUseTimeobj=GameObject.Find("winUsedTime");
+        }
+
         winUseTimeobj.SetActive(false);
         if(WorldGen.lose==true){
         backGround=Resources.Load<Sprite>("textures/lose");

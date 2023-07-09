@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class enemymove : MonoBehaviour
-{
+{   
+    public int effectEatenId=-1;
+    public float effectTime=0f;
+    public bool bulletIsEnchanted=false;
     public SpriteRenderer sr;
     public int enemydirection=0;
     public Vector2 enemyVec;
@@ -19,7 +22,7 @@ public class enemymove : MonoBehaviour
     public float bulletCD;
     public float playerDistance;
     public bool fire=false;
-    public static bool isWudi=false;
+    public bool isWudi=false;
     public float WudiTime;
     public GameObject hugeExlplo;
  public Transform playerPos;
@@ -32,7 +35,7 @@ public class enemymove : MonoBehaviour
     {
     enemyHomePos=GameObject.Find("enemyhome2").GetComponent<Transform>();
     WudiTime=40f;
-      enemyspeed=12f;
+      enemyspeed=5f;
         tankUp=new Sprite[3];
         tankDown=new Sprite[3];
         tankRight=new Sprite[3];
@@ -152,6 +155,17 @@ public void PlayerPosFind(){
     void Update()
     {
       //  Debug.Log(playerPos);
+      if(effectTime>0f){
+            effectTime-=Time.deltaTime;
+            switch(effectEatenId){
+                case 0:WudiTime=effectTime;break;
+                case 1:bulletIsEnchanted=true;break;
+            }
+        }else{
+
+            bulletIsEnchanted=false;
+            effectEatenId=-1;
+        }
 if(enemyspeed<12f){
     enemyspeed+=Time.deltaTime*55f;
 }
@@ -208,6 +222,7 @@ shooter.eulerAngles=new Vector3(0f,0f,90f+(int)Random.Range(-40f,40f));
         }
       GameObject a=Instantiate(bullet,bulletPos.position,shooter.rotation);
        a.GetComponent<bulletBehav>().fireSource=this.gameObject;
+       a.GetComponent<bulletBehav>().originMovitation=enemyrigidbody.velocity;
       //Instantiate(bullet,bulletPos.position,shooter.rotation);
           enemyspeed-=6f;
         bulletCD+=1.5f;
