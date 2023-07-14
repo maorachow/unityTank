@@ -29,6 +29,7 @@ public class enemymove : MonoBehaviour
  public SpriteRenderer shooterSR;
  public Transform enemyHomePos;
  public  Vector2 lastpos;
+ public Vector3 effectItemPos;
  public bool isOnClearRoadMode=false;
     //0up 1right 2down 3left
     void Start()
@@ -66,7 +67,24 @@ tankLeft[1]=Resources.Load<Sprite>("textures/enemy1z");
     InvokeRepeating("EnemyAI", 0.0f, 0.25f);
     InvokeRepeating("PlayerPosFind", 0.0f, 0.2f);
     }
-
+void MoveToInterestPoint(Vector2 point){
+    if(point!=null){
+        if(Mathf.Abs(point.x-transform.position.x)>=Mathf.Abs(point.y-transform.position.y)){
+            if(point.x-0.5f>transform.position.x){
+            enemyVec=new Vector2(0.6f,0f);}else if(point.x+0.5f<transform.position.x){
+            enemyVec=new Vector2(-0.6f,0f);
+            }
+        }else if(Mathf.Abs(point.x-transform.position.x)<Mathf.Abs(point.y-transform.position.y)){
+           if(point.y+0.5f<transform.position.y){
+            enemyVec=new Vector2(0f,-0.6f);
+        }else if(point.y-0.5f>transform.position.y){
+            enemyVec=new Vector2(0f,0.6f);
+        }
+        }else enemyVec=new Vector2(0f,0f);
+   
+    
+    }
+}
 void DiretionChange(Transform gameobject){
        // Vector3 ms = Input.mousePosition;
        // ms = Camera.main.ScreenToWorldPoint(ms);
@@ -101,9 +119,28 @@ bool checkIsMoving(){
 }
 
    public void EnemyAI(){
+  // Vector3 tmpEffectItemPos=new Vector3(100f,100f,0f);
+ //   for(int i=0;i<WorldGen.effectItemList.Count;i++){
+        
+     //   if((tmpEffectItemPos-transform.position).magnitude>(WorldGen.effectItemList[i].gameObject.GetComponent<Transform>().position-transform.position).magnitude){
+     //       tmpEffectItemPos=WorldGen.effectItemList[i].gameObject.GetComponent<Transform>().position;
+    //    }   
+
+   
+   // }
+   if(WorldGen.effectItemList.Count>0){
+    int tmp=(int)Random.Range(0f,WorldGen.effectItemList.Count-0.5f);
+    if(WorldGen.effectItemList[tmp]!=null){
+      effectItemPos=WorldGen.effectItemList[tmp].gameObject.GetComponent<Transform>().position;  
+    }
+   }
+   
+    
+   //effectItemPos=tmpEffectItemPos;
     if(playerDistance<=12f){
         fire=true;
     }
+
     if((enemyVec.x!=0f||enemyVec.y!=0f)&&checkIsMoving()==false){
 
       //  Ray2D ray=new Ray2D(gameObject.transform.position,bulletPos.position);
@@ -114,8 +151,9 @@ fire=true;
       //  }
 
     }
+
     if(playerPos!=null){
-        if(Mathf.Abs(playerPos.position.x-transform.position.x)>=Mathf.Abs(playerPos.position.y-transform.position.y)){
+        /*if(Mathf.Abs(playerPos.position.x-transform.position.x)>=Mathf.Abs(playerPos.position.y-transform.position.y)){
             if(playerPos.position.x-0.5f>transform.position.x){
             enemyVec=new Vector2(0.6f,0f);}else if(playerPos.position.x+0.5f<transform.position.x){
             enemyVec=new Vector2(-0.6f,0f);
@@ -126,10 +164,12 @@ fire=true;
         }else if(playerPos.position.y-0.5f>transform.position.y){
             enemyVec=new Vector2(0f,0.6f);
         }
-        }else enemyVec=new Vector2(0f,0f);
-   
+        }else enemyVec=new Vector2(0f,0f);*/
+   MoveToInterestPoint(playerPos.position);
     
-    }else if(Mathf.Abs(enemyHomePos.position.x-transform.position.x)>=Mathf.Abs(enemyHomePos.position.y-transform.position.y)){
+    }else {
+         MoveToInterestPoint(effectItemPos);
+    }/*if(Mathf.Abs(enemyHomePos.position.x-transform.position.x)>=Mathf.Abs(enemyHomePos.position.y-transform.position.y)){
             if(enemyHomePos.position.x-0.5f>transform.position.x){
             enemyVec=new Vector2(0.6f,0f);}else if(enemyHomePos.position.x+0.5f<transform.position.x){
             enemyVec=new Vector2(-0.6f,0f);
@@ -140,7 +180,7 @@ fire=true;
         }else if(enemyHomePos.position.y-0.5f>transform.position.y){
             enemyVec=new Vector2(0f,0.6f);
         }
-        }else enemyVec=new Vector2(0f,0f);
+        }else enemyVec=new Vector2(0f,0f);*/
     }
 
 

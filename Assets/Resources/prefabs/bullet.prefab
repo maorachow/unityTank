@@ -49,6 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movespeed: 0
+  breakingLeavesCD: 0
   originMovitation: {x: 0, y: 0}
   ExploEffect: {fileID: 0}
   hugeExlplo: {fileID: 0}
@@ -119,7 +120,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -169,6 +170,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movespeed: 3
+  breakingLeavesCD: 0
   originMovitation: {x: 0, y: 0}
   ExploEffect: {fileID: 6632700992143690786, guid: cd3c6b1616445484a89361b38041654b, type: 3}
   hugeExlplo: {fileID: 0}
