@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System.Text;
-
+using UnityEngine.Tilemaps;
 public class WorldGen : MonoBehaviour
 {   
     public static List<effectItemBeh> effectItemList=new List<effectItemBeh>();
@@ -26,13 +26,19 @@ public class WorldGen : MonoBehaviour
    public static float worldBrickDensity=0.45f;
    public GameObject gameOverUI;
    public static int worldwidth=10;
+   public static float playerRespawnTime=3f;
    public static bool isUsingKeboardShooterControl=false;
+   public static int maxEffectItemCount=40;
 public static int[,] map=new int[500,500];
 public string worldGenData;
 public string worldBrickDensityString;
 public string playerLifeCountString;
 public string worldwidthString;
-
+public static Tilemap tm;
+public static Tile brickTile;
+public static Tile stoneTile;
+public static Tile leavesTile;
+public static Tile leavesTileCracked;
     void Start()
 
     {
@@ -64,6 +70,11 @@ playerLifeCountString=line;
 //worldwidth=int.Parse(worldwidthString);
 //playerLifeCount=int.Parse(playerLifeCountString);
 ///worldBrickDensity=float.Parse(worldBrickDensityString);
+tm=GameObject.Find("Tilemap").GetComponent<Tilemap>();
+brickTile=Resources.Load<Tile>("textures/bricktile");
+leavesTile=Resources.Load<Tile>("textures/leavestile");
+stoneTile=Resources.Load<Tile>("textures/stonetile");
+leavesTileCracked=Resources.Load<Tile>("textures/leavescrackedtile");
 effectItem=Resources.Load<GameObject>("prefabs/effectitem");
 if(worldwidth==0){
     worldwidth=10;
@@ -128,17 +139,20 @@ for(int i = 0; i <2 ; i++) {
         map[enemyHomeMapPosx,enemyHomeMapPosy]=0;
        
 }
-         int playerHomeMapPosx=(int)(playerHome.GetComponent<Transform>().position.x);
-        int playerHomeMapPosy=(int)(playerHome.GetComponent<Transform>().position.y);
-         map[playerHomeMapPosx,playerHomeMapPosy]=0;
+         float playerHomeMapPosx=(playerHome.GetComponent<Transform>().position.x);
+        float playerHomeMapPosy=(playerHome.GetComponent<Transform>().position.y);
+         map[(int)playerHomeMapPosx,(int)playerHomeMapPosy]=0;
          for (int i=0;i<=2*worldwidth-1;i++){
             for(int j=0;j<=2*worldwidth-1;j++){
                 if(map[i,j]==1){
-                    Instantiate(brick,new Vector3(i,j,0),transform.rotation);
+               //     Instantiate(brick,new Vector3(i,j,0),transform.rotation);
+                    tm.SetTile(new Vector3Int((int)i,(int)j,0),brickTile);
                 }else if (map[i,j]==2){
-                    Instantiate(stone,new Vector3(i,j,0),transform.rotation);
+               //     Instantiate(stone,new Vector3(i,j,0),transform.rotation);
+                    tm.SetTile(new Vector3Int((int)i,(int)j,0),stoneTile);
                 }else if(map[i,j]==3){
-                    Instantiate(leaves,new Vector3(i,j,0),transform.rotation);
+             //       Instantiate(leaves,new Vector3(i,j,0),transform.rotation);
+                    tm.SetTile(new Vector3Int((int)i,(int)j,0),leavesTile);
                 }else if(map[i,j]==0){
                     continue;
                 }
@@ -169,9 +183,9 @@ for(int i = 0; i <2 ; i++) {
 
     addEffectItemCD-=Time.deltaTime;
 
-    if(addEffectItemCD<0f&&effectItemList.Count<=20){
+    if(addEffectItemCD<0f&&effectItemList.Count<=maxEffectItemCount){
         AddEffectItem();
-        addEffectItemCD=Random.Range(1f,5f);
+        addEffectItemCD=Random.Range(1f,3f);
     }
    // Debug.Log(playerRespawnCD);
     if(playerRespawnCD>0f&&tankPlayer==null){
@@ -194,7 +208,7 @@ if(enemyCount>0&&enemyOnWorldCount<2){
     tankPlayer=GameObject.FindGameObjectWithTag("Player");
         if(tankPlayer==null&&lose==false){
         if(playerLifeCount>=0&&playerRespawnCD<=0f){
-            playerRespawnCD=3.3f;
+            playerRespawnCD=playerRespawnTime;
     Instantiate(playerPrefab,new Vector2(playerHome.GetComponent<Transform>().position.x,playerHome.GetComponent<Transform>().position.x),transform.rotation);
       playerLifeCount--;
       

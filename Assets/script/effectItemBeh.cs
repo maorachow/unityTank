@@ -8,11 +8,14 @@ public class effectItemBeh : MonoBehaviour
     public Sprite resistanceIcon;
     public Sprite strengthIcon;
     public SpriteRenderer sr;
+    public GameObject itemEatenEffect;
     public float itemLifeTime=10f;
     //0resistance1strength
     // Start is called before the first frame update
     void Start()
-    {    WorldGen.effectItemList.Add(this);
+    {    
+        WorldGen.effectItemList.Add(this);
+        itemEatenEffect=Resources.Load<GameObject>("prefabs/itemeateneffectprefab");
         resistanceIcon=Resources.Load<Sprite>("textures/resistance");
         strengthIcon=Resources.Load<Sprite>("textures/strength");
         sr=GetComponent<SpriteRenderer>();
@@ -33,17 +36,23 @@ public class effectItemBeh : MonoBehaviour
         }
         
     }
+    
     void OnTriggerEnter2D(Collider2D other) {
         if(other.gameObject.tag=="Player"){
             other.gameObject.GetComponent<playermove>().effectEatenId=effectId;
             other.gameObject.GetComponent<playermove>().effectTime=8f;
-             WorldGen.effectItemList.Remove(this);
+            Instantiate(itemEatenEffect,transform.position,transform.rotation);
+            WorldGen.effectItemList.Remove(this);
             Destroy(this.gameObject);
             Destroy(this);
         }
         if(other.gameObject.tag=="enemy"){
             other.gameObject.GetComponent<enemymove>().effectEatenId=effectId;
             other.gameObject.GetComponent<enemymove>().effectTime=8f;
+            if(itemEatenEffect!=null){
+            Instantiate(itemEatenEffect,transform.position,transform.rotation);    
+            }
+            
             WorldGen.effectItemList.Remove(this);
             Destroy(this.gameObject);
             Destroy(this);

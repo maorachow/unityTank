@@ -713,6 +713,8 @@ MonoBehaviour:
   devWidth: 9.6
   devHeight: 4.8
   newPos: {x: 0, y: 0}
+  playerTransform: {fileID: 0}
+  player: {fileID: 0}
 --- !u!1 &331414381
 GameObject:
   m_ObjectHideFlags: 0
