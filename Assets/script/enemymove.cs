@@ -34,7 +34,7 @@ public class enemymove : MonoBehaviour
     //0up 1right 2down 3left
     void Start()
     {
-    enemyHomePos=GameObject.Find("enemyhome2").GetComponent<Transform>();
+ 
     WudiTime=40f;
       enemyspeed=5f;
         tankUp=new Sprite[3];
