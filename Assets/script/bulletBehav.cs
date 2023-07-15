@@ -14,6 +14,7 @@ public GameObject leavesCrackAudio;
 public GameObject leavesCrackAudio2;
 public GameObject exploAudio;
 public GameObject fireSource;
+public GameObject enemyCrushEffect;
 public Ray2D ray;
     // Start is called before the first frame update
     void Start()
@@ -26,6 +27,7 @@ public Ray2D ray;
         hugeExlplo=Resources.Load<GameObject>("prefabs/hugeexploeffect");
         hitAudio=Resources.Load<GameObject>("prefabs/hitsound");
         exploAudio=Resources.Load<GameObject>("prefabs/explosound");
+        enemyCrushEffect=Resources.Load<GameObject>("prefabs/tankcrusheffect");
         AudioClip hitclip = Resources.Load<AudioClip>("textures/hit");
 
         hitSound=GetComponent<AudioSource>();
@@ -33,14 +35,14 @@ public Ray2D ray;
     }
 
     // Update is called once per frame
-    void ExplodeAndClearBullet(){
+    public void ExplodeAndClearBullet(){
     Instantiate(ExploEffect,transform.position,Quaternion.Euler(0.0f,0.0f,0.0f));
     Instantiate(hitAudio,transform.position,Quaternion.Euler(0.0f,0.0f,0.0f));
     Destroy(this.gameObject);
         Destroy(this);
     }
 
-    Vector3Int GetCollidePos(){
+    public Vector3Int GetCollidePos(){
     ray=new Ray2D(transform.position,new Vector2(0f,1f));
    RaycastHit2D info = Physics2D.Raycast(ray.origin, ray.direction,0.1f);
    if(info.collider!=null){
@@ -56,13 +58,14 @@ public Ray2D ray;
           }
            return new Vector3Int(-10,-10,-10);
         }
-  void OnTriggerEnter2D(Collider2D other){
+  public virtual void OnTriggerEnter2D(Collider2D other){
     if(other.gameObject.tag=="Player"&&other.gameObject!=fireSource){
       if(other.gameObject.GetComponent<playermove>()!=null){
         if(other.gameObject.GetComponent<playermove>().isWudi==true){
     
       ExplodeAndClearBullet();
         }else{
+          Instantiate(hugeExlplo,other.gameObject.GetComponent<Transform>().position,Quaternion.Euler(0.0f,0.0f,0.0f));
       Destroy(other.gameObject);
       ExplodeAndClearBullet();
         }
@@ -78,6 +81,7 @@ public Ray2D ray;
     
       ExplodeAndClearBullet();
         }else{
+          Instantiate(enemyCrushEffect,other.gameObject.GetComponent<Transform>().position,Quaternion.Euler(0.0f,0.0f,0.0f));
       Destroy(other.gameObject);
       ExplodeAndClearBullet();
         }
@@ -90,7 +94,7 @@ public Ray2D ray;
   }
 
 
-    void Update()
+   public virtual void Update()
     {
 
    transform.Translate((new Vector2(0f,1f)+originMovitation*0.01f)*movespeed*Time.deltaTime);
@@ -119,91 +123,10 @@ if(WorldGen.tm.GetTile(tmp)==WorldGen.stoneTile){
   }
 
 
-/*
-if(info.collider.gameObject.tag=="leaves"){
-  
-  if(info.collider.gameObject.GetComponent<leaveCrackBeh>().leavesDamageCD<=0f){
-switch((int)Random.Range(0f,1.9f)){
-  case 1:Instantiate(leavesCrackAudio,transform.position,Quaternion.Euler(0.0f,0.0f,0.0f));
-  break;
-  
-  case 0:Instantiate(leavesCrackAudio2,transform.position,Quaternion.Euler(0.0f,0.0f,0.0f));
-  break;
-  
-  
-}
 
-    info.collider.gameObject.GetComponent<leaveCrackBeh>().leavesLife-=1;
-    info.collider.gameObject.GetComponent<leaveCrackBeh>().leavesDamageCD+=4f;
-  }
-}
-   }
+
+
     }
- private void OnCollisionEnter2D(Collision2D other) {
-
-
-    if(other.gameObject.tag=="brick"){
-      //  Debug.Log("brickhit");
-
-Instantiate(ExploEffect,transform.position,Quaternion.Euler(0.0f,0.0f,0.0f));
-Instantiate(hitAudio,transform.position,Quaternion.Euler(0.0f,0.0f,0.0f));
-        Destroy(other.gameObject);
-
-Transform brickPos=other.gameObject.GetComponent<Transform>();
-WorldGen.map[(int)(brickPos.position.x+9.5f),(int)(brickPos.position.y+9.5f)]=0;
-        Destroy(this.gameObject);
-        Destroy(this);
-    }
-
-
-
-        if(other.gameObject.tag=="stone"){
-      //  Debug.Log("stonehit");
-    Instantiate(hitAudio,transform.position,Quaternion.Euler(0.0f,0.0f,0.0f));
-      Instantiate(ExploEffect,transform.position,Quaternion.Euler(0.0f,0.0f,0.0f));
-
-        Destroy(this.gameObject);
-        Destroy(this);
-    }
-
-
-
-    if(other.gameObject.tag=="Player"){
-      //  Debug.Log("playerhit");
-
-    Transform otherPos=other.gameObject.GetComponent<Transform>();
-   if(other.gameObject.GetComponent<playermove>().isWudi==false){
-    Instantiate(exploAudio,transform.position,Quaternion.Euler(0.0f,0.0f,0.0f));
-    Instantiate(hugeExlplo,otherPos.position,Quaternion.Euler(0.0f,0.0f,0.0f));
-    Destroy(other.gameObject);
-   }
-       Instantiate(hitAudio,otherPos.position,Quaternion.Euler(0.0f,0.0f,0.0f));
- Instantiate(ExploEffect,transform.position,Quaternion.Euler(0.0f,0.0f,0.0f));
  
-        Destroy(this.gameObject);
-        Destroy(this);
-    }
-        
-
-
-  if(other.gameObject.tag=="enemy"){
-     //   Debug.Log("enemyhit");
-
-   Transform otherPos=other.gameObject.GetComponent<Transform>();
-   if(other.gameObject.GetComponent<enemymove>().isWudi==false){
-    Instantiate(exploAudio,transform.position,Quaternion.Euler(0.0f,0.0f,0.0f));
-    Instantiate(hugeExlplo,otherPos.position,Quaternion.Euler(0.0f,0.0f,0.0f));
-    Destroy(other.gameObject);
-   }
-        Instantiate(hitAudio,otherPos.position,Quaternion.Euler(0.0f,0.0f,0.0f));
- Instantiate(ExploEffect,transform.position,Quaternion.Euler(0.0f,0.0f,0.0f));
  
-        Destroy(this.gameObject);
-        Destroy(this);
-    }*/
-
-    }
- // void OnDestroy() {
-   //    Instantiate(ExploEffect,transform.position,transform.rotation);
-   // }
 }

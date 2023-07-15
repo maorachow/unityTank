@@ -34,8 +34,8 @@ public class playermove : MonoBehaviour
     {
         shooterSensi=160;
         playerspeed=10f;
-        WudiTime=40f;
-        Application.targetFrameRate =60;
+        WudiTime=2f;
+       // Application.targetFrameRate =60;
         tankUp=new Sprite[3];
         tankDown=new Sprite[3];
         tankRight=new Sprite[3];
@@ -48,7 +48,7 @@ public class playermove : MonoBehaviour
         tankRight[1]=Resources.Load<Sprite>("textures/tank1y");
         tankLeft[0]=Resources.Load<Sprite>("textures/tankz");
         tankLeft[1]=Resources.Load<Sprite>("textures/tank1z");
-        bulletCD=10f;
+        bulletCD=0f;
   //  bullet=Resources.Load<GameObject>("prefabs/bullet");
      sr=GetComponent<SpriteRenderer>();
      enchantedBullet=Resources.Load<GameObject>("prefabs/enchantedbullet");
@@ -109,10 +109,10 @@ void DirectionChangeByMouse(GameObject gameObject){
         }
 playerPos=transform;
 if(playerspeed<10f){
-    playerspeed+=Time.deltaTime*55f;
+    playerspeed+=Time.deltaTime;
 }
 if(WudiTime>0f){
-    WudiTime-=Time.deltaTime*60f;
+    WudiTime-=Time.deltaTime;
 
 }
 if(WudiTime>0f){
@@ -127,7 +127,7 @@ if(WudiTime>0f){
 //Debug.Log(playerspeed);
 
         if(bulletCD>=0f){
-        bulletCD=bulletCD-10f*Time.deltaTime;
+        bulletCD-=Time.deltaTime;
     }
         
         playerVec=new Vector2(Input.GetAxis("Horizontal"),Input.GetAxis("Vertical"));
@@ -149,8 +149,8 @@ if(WudiTime>0f){
         }
     
         //Instantiate(bullet,bulletPos.transform.position,shooter.transform.rotation);
-        playerspeed-=6f;
-        bulletCD+=1.5f;
+        playerspeed=6f;
+        bulletCD+=0.5f;
       }
         //Debug.Log(playerdirection);
       //  Debug.Log(bulletCD);
@@ -163,10 +163,13 @@ if(WudiTime>0f){
         }else if(playerdirection==3){
             sr.sprite=tankLeft[Mathf.Abs((int)(transform.position.x*10)%2)];
         }
+
      //Vector2 position = transform.position; 
-if(playerVec.x==0f&&playerVec.y==0f){
-    return;
-}
+
+        if(playerVec.x==0f&&playerVec.y==0f){
+                return;
+        }
+  
         if(Mathf.Abs(Input.GetAxis("Horizontal"))>=Mathf.Abs(Input.GetAxis("Vertical"))&&Input.GetAxis("Horizontal")>=0){
             playerdirection=1;
             shooter.transform.position=new Vector2(transform.position.x-0.2f,transform.position.y+0f);

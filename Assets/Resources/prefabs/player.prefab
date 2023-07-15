@@ -206,9 +206,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3407417094086333698}
   - component: {fileID: 2771500495184662582}
-  - component: {fileID: 4809274518807726394}
   - component: {fileID: -5660946796661606984}
   - component: {fileID: 7545864512290630054}
+  - component: {fileID: -7507325499264448213}
   m_Layer: 0
   m_Name: player
   m_TagString: Player
@@ -282,7 +282,62 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &4809274518807726394
+--- !u!114 &-5660946796661606984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8085207957765153036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6177008e9d8908a4284d248ffccd77a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effectEatenId: -1
+  effectTime: 0
+  bulletIsEnchanted: 0
+  sr: {fileID: 0}
+  playerdirection: 0
+  playerVec: {x: 0, y: 0}
+  tankUp: []
+  tankRight: []
+  tankDown: []
+  tankLeft: []
+  playerspeed: 49
+  playerrigidbody: {fileID: 0}
+  shooter: {fileID: 0}
+  bullet: {fileID: 0}
+  bulletPos: {fileID: 0}
+  bulletCD: 0
+  enchantedBullet: {fileID: 0}
+  isWudi: 0
+  WudiTime: 0
+  hugeExlplo: {fileID: 0}
+  shooterSR: {fileID: 0}
+  shooterSensi: 0
+--- !u!50 &7545864512290630054
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8085207957765153036}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 1
+  m_Mass: 0.6806251
+  m_LinearDrag: 5
+  m_AngularDrag: 5
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
+--- !u!61 &-7507325499264448213
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -306,55 +361,5 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.35, y: 0.35}
+  m_Size: {x: 0.33, y: 0.33}
   m_EdgeRadius: 0
---- !u!114 &-5660946796661606984
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8085207957765153036}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6177008e9d8908a4284d248ffccd77a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sr: {fileID: 0}
-  playerdirection: 0
-  playerVec: {x: 0, y: 0}
-  tankUp: []
-  tankRight: []
-  tankDown: []
-  tankLeft: []
-  playerspeed: 49
-  playerrigidbody: {fileID: 0}
-  shooter: {fileID: 0}
-  bullet: {fileID: 0}
-  bulletPos: {fileID: 0}
-  bulletCD: 0
-  WudiTime: 0
-  hugeExlplo: {fileID: 0}
-  shooterSR: {fileID: 0}
-  shooterSensi: 0
---- !u!50 &7545864512290630054
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8085207957765153036}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 1
-  m_Mass: 0.765625
-  m_LinearDrag: 5
-  m_AngularDrag: 5
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 4

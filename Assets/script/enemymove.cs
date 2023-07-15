@@ -34,7 +34,7 @@ public class enemymove : MonoBehaviour
     //0up 1right 2down 3left
     void Start()
     {
-    enemyHomePos=GameObject.Find("enemyhome2").GetComponent<Transform>();
+   // enemyHomePos=GameObject.Find("enemyhome2").GetComponent<Transform>();
     WudiTime=40f;
       enemyspeed=5f;
         tankUp=new Sprite[3];
@@ -319,7 +319,7 @@ if(enemyVec.x==0f&&enemyVec.y==0f){
         }
     }
     private void OnDestroy() {
-
+        
         WorldGen.enemyOnWorldCount--;
     }
 }
