@@ -14,13 +14,14 @@ public class UIBeh : MonoBehaviour
     public GameObject enemyLifePrefab;
     public GameObject playerLifeText;
     public Text playerLifeTextText;
+    public Text enemyLifeText;
     public Button pauseButton;
     public bool isPaused;
     public GameObject pauseMenuUI;
     public GameObject respawnCDText;
     // Start is called before the first frame update
     void Start()
-    { 
+    {   enemyLifeText=GameObject.Find("enemyLifeText").GetComponent<Text>();
         respawnCDText=GameObject.Find("respawnTime");
         pauseMenuUI=GameObject.Find("pauseMenuUI");
         pauseButton=GameObject.Find("Pause").GetComponent<Button>();
@@ -70,7 +71,17 @@ public class UIBeh : MonoBehaviour
         }
 
         playerLifeTextText.text="Player Life:"+WorldGen.playerLifeCount;
-       if(enemyLifeList.Count>WorldGen.enemyCount){
+        if(WorldGen.enemyCount>20){
+        enemyLifeText.text="Enemy Life:"+WorldGen.enemyCount;
+        for(int i=0;i<enemyLifeList.Count;i++){
+            enemyLifeList[i].GetComponent<Image>().color=new Color(1f,1f,1f,0f);
+        }
+        }else{
+                    for(int i=0;i<enemyLifeList.Count;i++){
+            enemyLifeList[i].GetComponent<Image>().color=new Color(1f,1f,1f,1f);
+        }
+             enemyLifeText.text="Enemy Life:";
+                 if(enemyLifeList.Count>WorldGen.enemyCount){
 for(int i = 0; i <enemyLifeList.Count-WorldGen.enemyCount ; i++) {
     Destroy(enemyLifeList[enemyLifeList.Count-i-1]);
     enemyLifeList.Remove(enemyLifeList[enemyLifeList.Count-i-1]);
@@ -84,7 +95,9 @@ for(int i = 0; i <enemyLifeList.Count-WorldGen.enemyCount ; i++) {
 enemyLifeList.Add(a);
        // Debug.Log("success add");
     }
-}
+}  
+        }
+
        }
 
 

@@ -18,7 +18,7 @@ public class playermove : MonoBehaviour
     public float playerspeed=49f;
     public Rigidbody2D playerrigidbody;
     public GameObject shooter;
-    public GameObject bullet;
+    public static GameObject bullet;
     public GameObject bulletPos;
     public float bulletCD;
     public GameObject enchantedBullet;
@@ -30,6 +30,7 @@ public class playermove : MonoBehaviour
     public int shooterSensi; 
     //0up 1right 2down 3left
     // Start is called before the first frame update
+   
     void Start()
     {
         shooterSensi=160;
@@ -143,9 +144,17 @@ if(WudiTime>0f){
        b.GetComponent<enchantedBulletBehav>().fireSource=this.gameObject;
        b.GetComponent<enchantedBulletBehav>().originMovitation=playerrigidbody.velocity;
         }else{
-             GameObject a=Instantiate(bullet,bulletPos.transform.position,shooter.transform.rotation);
-       a.GetComponent<bulletBehav>().fireSource=this.gameObject;
-       a.GetComponent<bulletBehav>().originMovitation=playerrigidbody.velocity;   
+      //       GameObject a=Instantiate(bullet,bulletPos.transform.position,shooter.transform.rotation);
+  //     a.GetComponent<bulletBehav>().fireSource=this.gameObject;
+    //   a.GetComponent<bulletBehav>().originMovitation=playerrigidbody.velocity;   
+    GameObject a=WorldGen.bulletPool.Get();
+    a.transform.position=bulletPos.transform.position;
+    a.transform.rotation=shooter.transform.rotation;
+    if(a.GetComponent<bulletBehav>()!=null){
+     a.GetComponent<bulletBehav>().fireSource=this.gameObject;
+    a.GetComponent<bulletBehav>().originMovitation=playerrigidbody.velocity;   
+    }
+    
         }
     
         //Instantiate(bullet,bulletPos.transform.position,shooter.transform.rotation);

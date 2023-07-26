@@ -260,7 +260,9 @@ shooter.eulerAngles=new Vector3(0f,0f,90f+(int)Random.Range(-40f,40f));
            }
             isOnClearRoadMode=false;
         }
-      GameObject a=Instantiate(bullet,bulletPos.position,shooter.rotation);
+      GameObject a=WorldGen.bulletPool.Get();
+      a.transform.position=bulletPos.position;
+      a.transform.rotation=shooter.rotation;
        a.GetComponent<bulletBehav>().fireSource=this.gameObject;
        a.GetComponent<bulletBehav>().originMovitation=enemyrigidbody.velocity;
       //Instantiate(bullet,bulletPos.position,shooter.rotation);

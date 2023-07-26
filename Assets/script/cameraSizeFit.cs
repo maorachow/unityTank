@@ -7,6 +7,7 @@ public class cameraSizeFit : MonoBehaviour
     public Camera mainCam;
    public float devWidth=20f;
    public float devHeight=20f;
+   public float targetOrthoSize;
    public Vector2 newPos;
    public Transform playerTransform;
    public GameObject player;
@@ -56,27 +57,28 @@ void Update(){
    }
     
      newPos = mainCam.ScreenToWorldPoint (Input.mousePosition);
-if(mainCam.orthographicSize<=0f){
-  mainCam.orthographicSize=1f;
+if(targetOrthoSize<=0f){
+  targetOrthoSize=1f;
 }
         //鼠标滚轮的效果
         if (Input.GetAxis("Mouse ScrollWheel") < 0)
         {
            
-            if (mainCam.orthographicSize <= 50f){
+            if (targetOrthoSize<= 50f){
 
-                mainCam.orthographicSize += 2.2f;
+                targetOrthoSize += 2.2f;
                 // transform.position = Vector2.Lerp (transform.position,  newPos, Time.deltaTime*5f);
                 }
         }
         //Zoom in
         if (Input.GetAxis("Mouse ScrollWheel") > 0)
         {
-            if (mainCam.orthographicSize >= 1f){
-                mainCam.orthographicSize -= 2.2f;
+            if (targetOrthoSize >= 3f){
+               targetOrthoSize-= 2.2f;
                 //transform.position = Vector2.Lerp (transform.position,  newPos, Time.deltaTime*5f);
                 }
         }
+        mainCam.orthographicSize=Mathf.Lerp(mainCam.orthographicSize,targetOrthoSize,3f*Time.deltaTime);
         if(player!=null){
           if(WorldGen.isUsingKeboardShooterControl==true){
   if(Input.GetMouseButton(0)){
@@ -95,7 +97,7 @@ if(mainCam.orthographicSize<=0f){
 }
 
 }else{
-  transform.position=Vector2.Lerp(transform.position,player.GetComponent<Transform>().position,0.7f);
+  transform.position=Vector2.Lerp(transform.position,player.GetComponent<Transform>().position,3f*Time.deltaTime);
 }
         }
 

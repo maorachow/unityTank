@@ -21,14 +21,32 @@ public class explosionEffectBeh : MonoBehaviour
         delayTime=0.1f;
        
         sr=GetComponent<SpriteRenderer>();
- InvokeRepeating("EffectFrame", 0.0f, 0.2f);
+    InvokeRepeating("EffectFrame", 0.0f, 0.2f);
+    }
+    void OnEnable(){
+    InvokeRepeating("EffectFrame", 0.0f, 0.2f);
+    }
+    void OnDisable(){
+        frame=0;
+        CancelInvoke("EffectFrame");
     }
 void EffectFrame(){
+    if(gameObject.activeInHierarchy!=true){
+        return;
+    }
     frame++;
         sr.sprite=explo[frame];
         if(frame>=5){
-            Destroy(this.gameObject);
-            Destroy(this);
+            if(gameObject.activeInHierarchy==true){
+                if(gameObject.name=="exploeffect(Clone)"){
+                   ObjectPools.exploEffectPool.Release(gameObject);  
+                }else if(gameObject.name=="hugeexploeffect(Clone)"){
+                    ObjectPools.hugeExlploPool.Release(gameObject);  
+                }
+               
+            }
+           // Destroy(this.gameObject);
+          //  Destroy(this);
             
 }}
     // Update is called once per frame

@@ -4,19 +4,25 @@ using UnityEngine;
 using System.IO;
 using System.Text;
 using UnityEngine.Tilemaps;
+using UnityEngine.Pool;
 public class WorldGen : MonoBehaviour
 {   
+    public static ObjectPool<GameObject> enemyPool;
+    public static ObjectPool<GameObject> playerPool;
+    public static ObjectPool<GameObject> bulletPool;
+    //public static ObjectPool<GameObject> 
     public static List<effectItemBeh> effectItemList=new List<effectItemBeh>();
     public float addEffectItemCD=4f;
    public GameObject brick;
    public GameObject stone;
    public GameObject leaves;
+    public static GameObject bullet;
    public static bool spawnItem=true;
    public static int playerLifeCount=11;
    public static int enemyCount;
    public static int enemyOnWorldCount;
-   public static int enemyHomeCount=2;
-   public static int playerHomeCount=4;
+   public static int enemyHomeCount=5;
+   public static int playerHomeCount=5;
    public static GameObject tankPlayer;
    public GameObject playerPrefab;
    public GameObject enemyPrefab;
@@ -31,49 +37,67 @@ public class WorldGen : MonoBehaviour
    public static float playerRespawnTime=3f;
    public static bool isUsingKeboardShooterControl=false;
    public static int maxEffectItemCount=40;
-public static int[,] map=new int[500,500];
-public string worldGenData;
-public string worldBrickDensityString;
-public string playerLifeCountString;
-public string worldwidthString;
-public static Tilemap tm;
-public static Tile brickTile;
-public static Tile stoneTile;
-public static Tile leavesTile;
-public static Tile leavesTileCracked;
-public static Tile playerHomeTile;
-public static Tile enemyHomeTile;
+    public static int[,] map=new int[500,500];
+    public string worldGenData;
+    public string worldBrickDensityString;
+    public string playerLifeCountString;
+    public string worldwidthString;
+    public static Tilemap tm;
+    public static Tile brickTile;
+    public static Tile stoneTile;
+    public static Tile leavesTile;
+    public static Tile leavesTileCracked;
+    public static Tile playerHomeTile;
+    public static Tile enemyHomeTile;
+    public bool create;
+    public GameObject CreateEnemy(){
+        GameObject go=Instantiate(enemyPrefab,enemyHome[(int)Random.Range(1f,enemyHome.Count-1f)]+new Vector2(0.5f,0.5f),transform.rotation);
+        return go;
+    }
+    void GetEnemy(GameObject gameObject){
+        gameObject.transform.position=enemyHome[(int)Random.Range(1f,enemyHome.Count-1f)]+new Vector2(0.5f,0.5f);
+        gameObject.SetActive(true);
+    }
+    void ReleaseEnemy(GameObject gameObject){
+        gameObject.SetActive(false);
+    }
+    void DestroyEnemy(GameObject gameObject){
+        Destroy(gameObject);
+    }
+    public GameObject CreatePlayer(){
+        GameObject go=Instantiate(playerPrefab,playerHome[(int)Random.Range(-0.4f,playerHome.Count-0.5f)]+new Vector2(0.5f,0.5f),transform.rotation);
+        return go;
+    }
+    void GetPlayer(GameObject gameObject){
+        gameObject.transform.position=playerHome[(int)Random.Range(-0.4f,playerHome.Count-0.5f)]+new Vector2(0.5f,0.5f);
+        gameObject.SetActive(true);
+    }
+    void ReleasePlayer(GameObject go){
+        go.SetActive(false);
+    }
+    void DestroyPlayer(GameObject go){
+        Destroy(go);
+    }
+
+    public static GameObject CreateBullet(){
+        GameObject go=Instantiate(bullet,new Vector2(1000f,1000f),Quaternion.Euler(0f,0f,0f));
+        return go;
+    }
+    public static void GetBullet(GameObject go){
+        go.SetActive(true);
+    }
+    public static void ReleaseBullet(GameObject go){
+    go.SetActive(false);
+    }
+    public static void DestroyBullet(GameObject go){
+    Destroy(go);
+    }
     void Start()
 
     {
-//int dataLineCount=1;
-enemyCount=20;
- /*using (StreamReader sr = new StreamReader("gameWorldGenData.txt"))
-            {
-               
-        string line;
-                while ((line = sr.ReadLine()) != null)
-
-                {
-                    if(dataLineCount==1){
-playerLifeCountString=line;
-                    }
-                    else if(dataLineCount==2){
-                        worldBrickDensityString=line;
-                    }
-                    else if(dataLineCount==3){
-                        worldwidthString=line;
-                    }
-                    dataLineCount++;
-                }
-            }*/
-
-//Debug.Log(worldBrickDensityString);
-//Debug.Log(playerLifeCountString);
-///Debug.Log(worldwidthString);
-//worldwidth=int.Parse(worldwidthString);
-//playerLifeCount=int.Parse(playerLifeCountString);
-///worldBrickDensity=float.Parse(worldBrickDensityString);
+        bulletPool=new ObjectPool<GameObject>(CreateBullet,GetBullet,ReleaseBullet,DestroyBullet,true,10,50);
+        playerPool=new ObjectPool<GameObject>(CreatePlayer,GetPlayer,ReleasePlayer,DestroyPlayer,true,10,50);
+        enemyPool=new ObjectPool<GameObject>(CreateEnemy,GetEnemy,ReleaseEnemy,DestroyEnemy,true,10,50);
 tm=GameObject.Find("Tilemap").GetComponent<Tilemap>();
 brickTile=Resources.Load<Tile>("textures/bricktile");
 leavesTile=Resources.Load<Tile>("textures/leavestile");
@@ -81,12 +105,14 @@ stoneTile=Resources.Load<Tile>("textures/stonetile");
 leavesTileCracked=Resources.Load<Tile>("textures/leavescrackedtile");
 playerHomeTile=Resources.Load<Tile>("textures/playerhometile");
 enemyHomeTile=Resources.Load<Tile>("textures/enemyhometile");
-
+bullet=Resources.Load<GameObject>("prefabs/bullet");
 effectItem=Resources.Load<GameObject>("prefabs/effectitem");
 if(worldwidth==0){
     worldwidth=10;
     }
-
+if(enemyCount==0){
+    enemyCount=20;
+    }
         if(playerLifeCount==0){
         playerLifeCount+=5;
     }
@@ -98,7 +124,7 @@ if(worldwidth==0){
        
         playerRespawnCD=5.1f;
         lose=false;
-        enemyCount=20;
+      
        //  worldwidth=10;
         gameOverUI.SetActive(false);
          brick=Resources.Load<GameObject>("prefabs/brick");
@@ -198,7 +224,14 @@ while(tmp2>0){
         
     }
   void FixedUpdate() {
-
+    enemyOnWorldCount=GameObject.FindGameObjectsWithTag("enemy").Length;
+    Debug.Log("enemyPool active count:"+enemyPool.CountActive);
+Debug.Log("enemyPool inactive count:"+enemyPool.CountInactive);
+Debug.Log("enemyPool countAll:"+enemyPool.CountAll);
+if(create){
+    enemyPool.Get();
+    create=false;
+}
     addEffectItemCD-=Time.deltaTime;
 
     if(addEffectItemCD<0f&&effectItemList.Count<=maxEffectItemCount){
@@ -216,10 +249,10 @@ if(enemyCount==0&&enemyOnWorldCount==0){
 
 if(enemyCount>0&&enemyOnWorldCount<enemyHomeCount){
    
-        Instantiate(enemyPrefab,enemyHome[(int)Random.Range(1f,enemyHome.Count-1f)]+new Vector2(0.5f,0.5f),transform.rotation); 
-         
-    
-   enemyOnWorldCount++;
+       // Instantiate(enemyPrefab,enemyHome[(int)Random.Range(1f,enemyHome.Count-1f)]+new Vector2(0.5f,0.5f),transform.rotation); 
+         enemyPool.Get();
+  //  MyObjectPool.poolInstance.Get();
+ 
     enemyCount--;
    
 }
@@ -227,7 +260,8 @@ if(enemyCount>0&&enemyOnWorldCount<enemyHomeCount){
         if(tankPlayer==null&&lose==false){
         if(playerLifeCount>=0&&playerRespawnCD<=0f){
             playerRespawnCD=playerRespawnTime;
-    Instantiate(playerPrefab,playerHome[(int)Random.Range(0f,playerHome.Count-1f)]+new Vector2(0.5f,0.5f),transform.rotation);
+            playerPool.Get();
+    //Instantiate(playerPrefab,playerHome[(int)Random.Range(-0.4f,playerHome.Count-0.5f)]+new Vector2(0.5f,0.5f),transform.rotation);
       playerLifeCount--;
       
     //return;
