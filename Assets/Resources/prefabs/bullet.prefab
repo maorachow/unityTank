@@ -51,15 +51,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movespeed: 0
   originMovitation: {x: 0, y: 0}
-  ExploEffect: {fileID: 0}
-  hugeExlplo: {fileID: 0}
+  bulletBreakLeavesCD: 0
   hitSound: {fileID: 0}
-  hitAudio: {fileID: 0}
-  leavesCrackAudio: {fileID: 0}
-  leavesCrackAudio2: {fileID: 0}
-  exploAudio: {fileID: 0}
+  brickSound1: {fileID: 0}
+  leavesSound1: {fileID: 0}
+  brickSound2: {fileID: 0}
+  leavesSound2: {fileID: 0}
   fireSource: {fileID: 0}
-  enemyCrushEffect: {fileID: 0}
 --- !u!212 &7051215351364649060
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -198,15 +196,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movespeed: 3
   originMovitation: {x: 0, y: 0}
-  ExploEffect: {fileID: 6632700992143690786, guid: cd3c6b1616445484a89361b38041654b, type: 3}
-  hugeExlplo: {fileID: 0}
+  bulletBreakLeavesCD: 0
   hitSound: {fileID: 0}
-  hitAudio: {fileID: 0}
-  leavesCrackAudio: {fileID: 0}
-  leavesCrackAudio2: {fileID: 0}
-  exploAudio: {fileID: 0}
+  brickSound1: {fileID: 0}
+  leavesSound1: {fileID: 0}
+  brickSound2: {fileID: 0}
+  leavesSound2: {fileID: 0}
   fireSource: {fileID: 0}
-  enemyCrushEffect: {fileID: 0}
 --- !u!82 &-2638806445511650013
 AudioSource:
   m_ObjectHideFlags: 0
@@ -217,11 +213,11 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: ec537af070d000d4fb411fb5185aedcb, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 42c52b5d797564c459ba16c40463d98b, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

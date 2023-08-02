@@ -6,15 +6,24 @@ public class enchantedBulletBehav : bulletBehav
 {
 
     public override void OnTriggerEnter2D(Collider2D other){
+        if(other.gameObject==fireSource){
+  
+    return;
+  }
     if(other.gameObject.tag=="Player"&&other.gameObject!=fireSource){
       if(other.gameObject.GetComponent<playermove>()!=null){
         if(other.gameObject.GetComponent<playermove>().isWudi==true){
-    
+    other.gameObject.GetComponent<Rigidbody2D>().AddForce(transform.up*3f);
       ExplodeAndClearBullet();
         }else{
-      Instantiate(ExploEffect,other.transform.position,Quaternion.Euler(0.0f,0.0f,0.0f));
-      Destroy(other.gameObject);
-    
+    //  Instantiate(ExploEffect,other.transform.position,Quaternion.Euler(0.0f,0.0f,0.0f));
+       GameObject x=ObjectPools.playerCrushEffectPool.Get();
+       x.transform.position=transform.position;
+      x.transform.rotation=Quaternion.Euler(0.0f,0.0f,0.0f);
+    //  Destroy(other.gameObject);
+     if(other.gameObject.activeInHierarchy==true){
+      WorldGen.enemyPool.Release(other.gameObject);
+     }
         }
       }else{
       //  Destroy(other.gameObject);
@@ -28,8 +37,15 @@ public class enchantedBulletBehav : bulletBehav
     
       ExplodeAndClearBullet();
         }else{
-      Instantiate(enemyCrushEffect,other.transform.position,Quaternion.Euler(0.0f,0.0f,0.0f));
-      Destroy(other.gameObject);
+           GameObject a=ObjectPools.enemyCrushEffectPool.Get();
+       a.transform.position=transform.position;
+      a.transform.rotation=Quaternion.Euler(0.0f,0.0f,0.0f);
+      //Instantiate(enemyCrushEffect,other.transform.position,Quaternion.Euler(0.0f,0.0f,0.0f));
+     // Destroy(other.gameObject);
+     if(other.gameObject.activeInHierarchy==true){
+      WorldGen.enemyPool.Release(other.gameObject);
+     }
+     
       
         }
       }else{
@@ -54,10 +70,14 @@ public class enchantedBulletBehav : bulletBehav
   }
 
    public override void BulletCollideWithWallEvent(Vector3Int collidePos){
+
     if(WorldGen.tm.GetTile(collidePos)==WorldGen.stoneTile){
        ExplodeAndClearBullet();
     }else if(WorldGen.tm.GetTile(collidePos)==WorldGen.brickTile){
-      Instantiate(hugeExlplo,collidePos+new Vector3(0.5f,0.5f,0f),Quaternion.Euler(0f,0.0f,Random.Range(0f,180f)));
+          GameObject x=ObjectPools.hugeExlploPool.Get();
+       x.transform.position=collidePos;
+      x.transform.rotation=Quaternion.Euler(0.0f,0.0f,Random.Range(0f,180f));
+     
       WorldGen.tm.SetTile(collidePos,null);
       
     //  ExplodeAndClearBullet();

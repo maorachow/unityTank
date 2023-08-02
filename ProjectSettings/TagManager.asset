@@ -9,6 +9,8 @@ TagManager:
   - enemy
   - leaves
   - bullet
+  - Tilemap
+  - pauseMenuUI
   layers:
   - Default
   - TransparentFX

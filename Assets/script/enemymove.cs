@@ -35,7 +35,7 @@ public class enemymove : MonoBehaviour
     void Start()
     {
  
-    WudiTime=40f;
+    WudiTime=2f;
       enemyspeed=5f;
         tankUp=new Sprite[3];
         tankDown=new Sprite[3];
@@ -89,11 +89,11 @@ void DiretionChange(Transform gameobject){
        // Vector3 ms = Input.mousePosition;
        // ms = Camera.main.ScreenToWorldPoint(ms);
        Vector3 ms;
-if(playerPos!=null){
-    ms=playerPos.position;
-}else{
-    ms=new Vector3(0f,0f);
-}  
+        if(playerPos!=null){
+        ms=playerPos.position;
+        }else{
+        ms=new Vector3(0f,0f);
+        }  
         Vector3 gunPos = gameobject.transform.position;
         float fireangle;
         
@@ -104,7 +104,7 @@ if(playerPos!=null){
             fireangle = -fireangle;
         }
         gameobject.transform.eulerAngles = new Vector3(0, 0, fireangle);
-}
+        }
    
 bool checkIsMoving(){
    
@@ -131,7 +131,7 @@ bool checkIsMoving(){
    if(WorldGen.effectItemList.Count>0){
     int tmp=(int)Random.Range(0f,WorldGen.effectItemList.Count-0.5f);
     if(WorldGen.effectItemList[tmp]!=null){
-      effectItemPos=WorldGen.effectItemList[tmp].gameObject.GetComponent<Transform>().position;  
+      effectItemPos=WorldGen.effectItemList[tmp].GetComponent<Transform>().position;  
     }
    }
    
@@ -147,7 +147,8 @@ bool checkIsMoving(){
      //   RaycastHit2D info=Physics2D.Raycast(ray.origin, ray.direction,5.7f);
       //  if(info.collider.gameObject.tag!="enemy"){
          isOnClearRoadMode=true;
-fire=true;   
+         
+        fire=true;   
       //  }
 
     }
@@ -184,7 +185,21 @@ fire=true;
     }
 
 
-
+public bool RayCheckIsAttackingTeammate(){
+    Ray2D ray=new Ray2D(shooter.transform.position,shooter.transform.position+shooter.transform.up);
+   // Debug.DrawLine(shooter.transform.position,shooter.transform.position+shooter.transform.up,Color.green,5);
+    RaycastHit2D[] hit=Physics2D.RaycastAll(shooter.transform.position,shooter.transform.position+shooter.transform.up*10f,15f);
+    for(int i=0;i<hit.Length;i++){
+      if(hit[i].collider.gameObject.tag=="enemy"&&hit[i].collider.gameObject!=gameObject){
+        return true;
+    }    
+    }
+  
+    return false;
+}
+void OnEnable(){
+    WudiTime=2f;
+}
 public void PlayerPosFind(){
       if(GameObject.FindGameObjectWithTag("Player")!=null){
      playerPos=GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();   
@@ -192,8 +207,10 @@ public void PlayerPosFind(){
         playerPos=null;
      }
 }
+
     void Update()
     {
+       // Debug.DrawLine(shooter.transform.position,shooter.transform.position+shooter.transform.forward,Color.green);
       //  Debug.Log(playerPos);
       if(effectTime>0f){
             effectTime-=Time.deltaTime;
@@ -213,7 +230,7 @@ if(enemyspeed<12f){
 if(WudiTime>0f){
     sr.color=Color.yellow;
     shooterSR.color=Color.yellow;
-    WudiTime-=Time.deltaTime*60f;
+    WudiTime-=Time.deltaTime;
 }
 if(WudiTime>0f){
     isWudi=true;
@@ -244,31 +261,47 @@ if(playerPos==null){
        
 
       if(fire==true&&bulletCD<=0f){
-         
+         DiretionChange(shooter);
         if(isOnClearRoadMode==false){
-            DiretionChange(shooter);
+          //  DiretionChange(shooter);
              shooter.eulerAngles+=new Vector3(0,0,(int)Random.Range(-10f,10f));
         }else{
            if(enemydirection==0){
-shooter.eulerAngles=new Vector3(0f,0f,0f+(int)Random.Range(-40f,40f));
+shooter.eulerAngles=new Vector3(0f,0f,0f+(int)Random.Range(-45f,45f));
            }else if(enemydirection==1){
-shooter.eulerAngles=new Vector3(0f,0f,270f+(int)Random.Range(-40f,40f));
+shooter.eulerAngles=new Vector3(0f,0f,270f+(int)Random.Range(-45f,45f));
            }else if(enemydirection==2){
-shooter.eulerAngles=new Vector3(0f,0f,180f+(int)Random.Range(-40f,40f));
+shooter.eulerAngles=new Vector3(0f,0f,180f+(int)Random.Range(-45f,45f));
            }else if(enemydirection==3){
-shooter.eulerAngles=new Vector3(0f,0f,90f+(int)Random.Range(-40f,40f));
+shooter.eulerAngles=new Vector3(0f,0f,90f+(int)Random.Range(-45f,45f));
            }
             isOnClearRoadMode=false;
         }
+         if(RayCheckIsAttackingTeammate()){
+            fire=false;
+            isOnClearRoadMode=false;
+         }else{
+            shooter.gameObject.GetComponent<Animation>().Play();
+            if(bulletIsEnchanted==true){
+        GameObject b=ObjectPools.enchantedBulletPool.Get();
+      b.transform.position=bulletPos.position;
+      b.transform.rotation=shooter.rotation;
+       b.GetComponent<enchantedBulletBehav>().fireSource=this.gameObject;
+       b.GetComponent<enchantedBulletBehav>().originMovitation=enemyrigidbody.velocity;
+
+            }
       GameObject a=WorldGen.bulletPool.Get();
       a.transform.position=bulletPos.position;
       a.transform.rotation=shooter.rotation;
        a.GetComponent<bulletBehav>().fireSource=this.gameObject;
        a.GetComponent<bulletBehav>().originMovitation=enemyrigidbody.velocity;
+
       //Instantiate(bullet,bulletPos.position,shooter.rotation);
           enemyspeed-=6f;
         bulletCD+=1.5f;
         fire=false;
+         }
+       
       }
      
         if(enemydirection==0){
@@ -288,7 +321,7 @@ if(enemyVec.x==0f&&enemyVec.y==0f){
         if(Mathf.Abs(enemyVec.x)>=Mathf.Abs(enemyVec.y)&&enemyVec.x>=0){
             enemydirection=1;
             shooter.transform.position=new Vector2(transform.position.x-0.1f,transform.position.y+0f);
-            enemyrigidbody.velocity=new Vector2(enemyVec.x*enemyspeed,0f);
+            enemyrigidbody.velocity=Vector2.Lerp(enemyrigidbody.velocity,new Vector2(enemyVec.x*enemyspeed,0f),Time.deltaTime*8f);
             
         //     position.x = position.x + enemyspeed * enemyVec.x * Time.deltaTime; 
          //    enemyrigidbody.MovePosition(position);
@@ -296,7 +329,7 @@ if(enemyVec.x==0f&&enemyVec.y==0f){
         }else if(Mathf.Abs(enemyVec.x)>=Mathf.Abs(enemyVec.y)&&enemyVec.x<0){
             enemydirection=3;
             shooter.transform.position=new Vector2(transform.position.x+0.1f,transform.position.y+0f);
-             enemyrigidbody.velocity=new Vector2(enemyVec.x*enemyspeed,0f);  
+             enemyrigidbody.velocity=Vector2.Lerp(enemyrigidbody.velocity,new Vector2(enemyVec.x*enemyspeed,0f),Time.deltaTime*8f);  
 
           //  position.x += enemyspeed * enemyVec.x * Time.deltaTime; 
           //  enemyrigidbody.MovePosition(position);
@@ -305,7 +338,7 @@ if(enemyVec.x==0f&&enemyVec.y==0f){
         if(Mathf.Abs(enemyVec.x)<Mathf.Abs(enemyVec.y)&&enemyVec.y>=0){
             enemydirection=0;
             shooter.transform.position=new Vector2(transform.position.x-0f,transform.position.y-0.1f);
-             enemyrigidbody.velocity=new Vector2(0f,enemyVec.y*enemyspeed);
+             enemyrigidbody.velocity=Vector2.Lerp(enemyrigidbody.velocity,new Vector2(0f,enemyVec.y*enemyspeed),Time.deltaTime*8f);
              
           // position.y += enemyspeed * enemyVec.y * Time.deltaTime;  
         //   enemyrigidbody.MovePosition(position);
@@ -313,7 +346,7 @@ if(enemyVec.x==0f&&enemyVec.y==0f){
         }else if(Mathf.Abs(enemyVec.x)<Mathf.Abs(enemyVec.y)&&enemyVec.y<0){
             enemydirection=2;
             shooter.transform.position=new Vector2(transform.position.x-0f,transform.position.y+0.1f);
-           enemyrigidbody.velocity=new Vector2(0f,enemyVec.y*enemyspeed);
+           enemyrigidbody.velocity=Vector2.Lerp(enemyrigidbody.velocity,new Vector2(0f,enemyVec.y*enemyspeed),Time.deltaTime*8f);
              
         //    position.y += enemyspeed * enemyVec.y * Time.deltaTime;  
          // enemyrigidbody.MovePosition(position);

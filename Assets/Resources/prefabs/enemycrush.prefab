@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4977742228568341875}
   - component: {fileID: 7832224204252792587}
   - component: {fileID: 1575662857100224785}
-  - component: {fileID: 6866504978782013481}
+  - component: {fileID: 43035708826398386}
   m_Layer: 0
   m_Name: enemycrush
   m_TagString: Untagged
@@ -43,7 +43,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5390094140186486705}
   serializedVersion: 8
-  lengthInSec: 0.1
+  lengthInSec: 0.3
   simulationSpeed: 5
   stopAction: 0
   cullingMode: 0
@@ -4926,7 +4926,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &6866504978782013481
+--- !u!114 &43035708826398386
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4935,6 +4935,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 5390094140186486705}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b900806caeed7f74396e702a3197f2c7, type: 3}
+  m_Script: {fileID: 11500000, guid: dcd254d7f0727f54186812d1d5f7c9a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  effectLifeTime: 3
+  ps: {fileID: 0}
+  AS: {fileID: 0}

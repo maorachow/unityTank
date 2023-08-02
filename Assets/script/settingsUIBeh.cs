@@ -11,11 +11,13 @@ public class SettingsData{
     public float worldBrickDensity;
     public bool isUsingKeboardShooterControl;
     public int enemyCount;
+    public int enemyOnWorldCount;
 
 }
 public class settingsUIBeh : MonoBehaviour
 {   
-    public string worldSettingsString;
+    public static string dataStorageLocation;
+        public string worldSettingsString;
     public Text worldBrickDensityText;
     public Text playerLifeText;
     public Text worldWidthText;
@@ -26,23 +28,33 @@ public class settingsUIBeh : MonoBehaviour
     public static GameObject settingsUIObject;
     public static Slider worldWidthSlider;
     public static Slider enemyCountSlider;
+    public static Slider enemyOnWorldCountSlider;
+    public Text enemyOnWorldCountText;
     public Text enemyCountText;
     public Toggle isUsingKeboardShooterControlToggle;
     public static SettingsData settingsDataReadFromDisk;
     public static SettingsData currentSettingsData=new SettingsData();
     void Start()
 
-    {   if(!Directory.Exists("C:/unityTankData/Json")){
-        Directory.CreateDirectory("C:/unityTankData");
-        Directory.CreateDirectory("C:/unityTankData/Json");
-        if(!File.Exists("C:/unityTankData/Json/Settings.json")){
-            File.Create("C:/unityTankData/Json/Settings.json");
+    {   switch(Application.platform){
+        case RuntimePlatform.Android: dataStorageLocation=Application.persistentDataPath;break;
+        case RuntimePlatform.WindowsEditor:dataStorageLocation="C:/unityTankData";break;
+        case RuntimePlatform.WindowsPlayer: dataStorageLocation="C:/unityTankData";break;
+        default: dataStorageLocation=Application.persistentDataPath;break;
+    }
+        if(!Directory.Exists(dataStorageLocation+"/Json")){
+        Directory.CreateDirectory(dataStorageLocation);
+        Directory.CreateDirectory(dataStorageLocation+"/Json");
+        if(!File.Exists(dataStorageLocation+"/Json/Settings.json")){
+            File.Create(dataStorageLocation+"/Json/Settings.json");
         }
     }
         
         currentSettingsData=new SettingsData();
         Debug.Log(currentSettingsData);
         startGameUI.isSettingChanged=true;
+        enemyOnWorldCountText=GameObject.Find("enemyOnWorldCountText").GetComponent<Text>();
+        enemyOnWorldCountSlider=GameObject.Find("Sliderenemyonworldcount").GetComponent<Slider>();
         dataPathText=GameObject.Find("dataPath").GetComponent<Text>();
         worldWidthText=GameObject.Find("worldWidthText").GetComponent<Text>();
         settingsUIObject=GameObject.Find("settingsMenu");
@@ -58,6 +70,7 @@ public class settingsUIBeh : MonoBehaviour
          worldBrickDensitySlider.onValueChanged.AddListener(worldBrickDensitySliderChanged);
          worldWidthSlider.onValueChanged.AddListener(worldWidthSliderChanged);
          enemyCountSlider.onValueChanged.AddListener(enemyCountSliderChanged);
+         enemyOnWorldCountSlider.onValueChanged.AddListener(enemyOnWorldCountSliderChanged);
          saveButton.onClick.AddListener(saveButtonOnClick);
          worldWidthText.text=(2*(worldWidthSlider.value)).ToString()+" * "+(2*(worldWidthSlider.value)).ToString();
          playerLifeText.text=playerLifeSlider.value.ToString();
@@ -69,7 +82,7 @@ public class settingsUIBeh : MonoBehaviour
 
 
 
-        worldSettingsString=File.ReadAllText("C:/unityTankData/Json/Settings.json");
+        worldSettingsString=File.ReadAllText(dataStorageLocation+"/Json/Settings.json");
         if(worldSettingsString!=""){
         settingsDataReadFromDisk=JsonMapper.ToObject<SettingsData>(worldSettingsString); 
         currentSettingsData=settingsDataReadFromDisk;
@@ -79,14 +92,15 @@ public class settingsUIBeh : MonoBehaviour
             tmp.playerLife=(int)playerLifeSlider.value;
             tmp.worldBrickDensity=(int)worldBrickDensitySlider.value;
             tmp.enemyCount=(int)enemyCountSlider.value;
+            tmp.enemyOnWorldCount=(int)enemyOnWorldCountSlider.value;
             settingsDataReadFromDisk=tmp;
-            Debug.Log(JsonMapper.ToJson(settingsDataReadFromDisk));
+        //    Debug.Log(JsonMapper.ToJson(settingsDataReadFromDisk));
             currentSettingsData=settingsDataReadFromDisk;
         }
         ApplyFileData(currentSettingsData);
 
 
-        dataPathText.text="Game Settings Datapath:"+"C:/unityTankData/Json";
+        dataPathText.text="Game Settings Datapath:"+dataStorageLocation+"/Json";
     }
     public void ApplyFileData(SettingsData sd){
         if(playerLifeSlider!=null&&worldWidthSlider!=null&&worldBrickDensitySlider!=null&&sd!=null){
@@ -95,6 +109,7 @@ public class settingsUIBeh : MonoBehaviour
         worldBrickDensitySlider.value=sd.worldBrickDensity;
         enemyCountSlider.value=sd.enemyCount;    
         isUsingKeboardShooterControlToggle.isOn=sd.isUsingKeboardShooterControl;
+        enemyOnWorldCountSlider.value=sd.enemyOnWorldCount;
         }else{
             Debug.Log("null");
         }
@@ -104,12 +119,12 @@ public class settingsUIBeh : MonoBehaviour
 
 
     void SaveSettings(){
-      FileStream fs = new FileStream("C:/unityTankData/Json/Settings.json", FileMode.Truncate, FileAccess.ReadWrite, FileShare.None);
+      FileStream fs = new FileStream(dataStorageLocation+"/Json/Settings.json", FileMode.Truncate, FileAccess.ReadWrite, FileShare.None);
       fs.Close();
       string saveData=JsonMapper.ToJson(currentSettingsData);
-      Debug.Log(Application.persistentDataPath);
-      Debug.Log(Application.dataPath);
-      File.AppendAllText("C:/unityTankData/Json/Settings.json",saveData);
+    //  Debug.Log(Application.persistentDataPath);
+  //    Debug.Log(Application.dataPath);
+      File.AppendAllText(dataStorageLocation+"/Json/Settings.json",saveData);
     }
 
 
@@ -126,6 +141,14 @@ public class settingsUIBeh : MonoBehaviour
         Debug.Log("null");
     }else{
      currentSettingsData.isUsingKeboardShooterControl=isOn;}
+    }
+    void enemyOnWorldCountSliderChanged(float a){
+        enemyOnWorldCountText.text=enemyOnWorldCountSlider.value.ToString();
+    WorldGen.enemyHomeCount=(int)enemyOnWorldCountSlider.value;
+    if(currentSettingsData==null){
+        Debug.Log("null");
+    }else{
+     currentSettingsData.enemyOnWorldCount=(int)enemyOnWorldCountSlider.value;}
     }
     void enemyCountSliderChanged(float a){
     enemyCountText.text=enemyCountSlider.value.ToString();

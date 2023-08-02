@@ -16,14 +16,50 @@ public class UIBeh : MonoBehaviour
     public Text playerLifeTextText;
     public Text enemyLifeText;
     public Button pauseButton;
+    public Button mobileFireButton;
+    public static Slider mobileViewRangeSlider;
+    public static Transform joystick1Pos;
+    public static Transform joystick2Pos;
+    public static GameObject playerMovementJoystick;
+    public static GameObject shooterMovementJoystick;
+    public static GameObject playerFireButton;
+    public static Vector2 mobilePlayerVec;
+    public static Vector2 mobilePlayerShooterVec;
+    public RuntimePlatform platform = Application.platform;
     public bool isPaused;
     public GameObject pauseMenuUI;
     public GameObject respawnCDText;
+
     // Start is called before the first frame update
     void Start()
-    {   enemyLifeText=GameObject.Find("enemyLifeText").GetComponent<Text>();
+    {   
+         platform=Application.platform;
+         playerMovementJoystick=GameObject.Find("playermovejoystick");
+         shooterMovementJoystick=GameObject.Find("shootermovejoystick");
+         playerFireButton=GameObject.Find("firebutton");
+         mobileViewRangeSlider=GameObject.Find("viewrangeslider").GetComponent<Slider>();
+
+         if(platform!=RuntimePlatform.Android&&platform!=RuntimePlatform.IPhonePlayer){
+              playerMovementJoystick.SetActive(false);
+                shooterMovementJoystick.SetActive(false);
+                playerFireButton.SetActive(false);
+                mobileViewRangeSlider.gameObject.SetActive(false);
+         }else{
+
+                   mobileFireButton=playerFireButton.GetComponent<Button>();
+  
+       mobileFireButton.onClick.AddListener(FireButtonOnClick); 
+    
+       mobileViewRangeSlider.onValueChanged.AddListener(cameraSizeFit.mobileViewRangeSliderOnValueChanged);
+      shooterMovementJoystick.GetComponent<ScrollRect>().onValueChanged.AddListener(ShooterMovementJoystickOnValueChanged);
+      playerMovementJoystick.GetComponent<ScrollRect>().onValueChanged.AddListener(PlayerMovementJoystickOnValueChanged);
+        joystick1Pos=playerMovementJoystick.transform.GetChild(0);
+        joystick2Pos=shooterMovementJoystick.transform.GetChild(0);
+         }
+
+        enemyLifeText=GameObject.Find("enemyLifeText").GetComponent<Text>();
         respawnCDText=GameObject.Find("respawnTime");
-        pauseMenuUI=GameObject.Find("pauseMenuUI");
+        pauseMenuUI=GameObject.FindGameObjectWithTag("pauseMenuUI");
         pauseButton=GameObject.Find("Pause").GetComponent<Button>();
         pauseButton.onClick.AddListener(pauseButtonClick);
         playerLifeText=GameObject.Find("playerLifeText");
@@ -45,24 +81,48 @@ public class UIBeh : MonoBehaviour
    // Debug.Log(a.GetComponent<RectTransform>().pivot);
 //Debug.Log(a.GetComponent<RectTransform>().anchoredPosition);
         enemyLifeList.Add(a);
-}
+        }
 
 
     }
-
+    void ShooterMovementJoystickOnValueChanged(Vector2 v){
+            mobilePlayerShooterVec=joystick2Pos.localPosition/100;
+    }
+    void PlayerMovementJoystickOnValueChanged(Vector2 v){
+            mobilePlayerVec=joystick1Pos.localPosition/100;
+    }
+    void FireButtonOnClick(){
+        if(playermove.isUsingMobileControl){
+            if(GameObject.FindGameObjectWithTag("Player")!=null){
+               GameObject.FindGameObjectWithTag("Player").GetComponent<playermove>().ShootBullet(); 
+            }
+            
+        }
+    }
     // Update is called once per frame
     void Update()
     {
+      //  if(playerMovementJoystick.activeInHierarchy==true&&shooterMovementJoystick.activeInHierarchy==true){
+        //    mobilePlayerVec=playerMovementJoystick.GetComponent<ScrollRect>().normalizedPosition+new Vector2(0.5f,0.5f);
+        //    mobilePlayerShooterVec=shooterMovementJoystick.GetComponent<ScrollRect>().normalizedPosition+new Vector2(0.5f,0.5f);
+      //  }
+   //   if(platform==RuntimePlatform.Android||platform==RuntimePlatform.IPhonePlayer){
+   //           mobilePlayerVec=joystick1Pos.localPosition/100;
+    //  mobilePlayerShooterVec=joystick2Pos.localPosition/100;
+    //  }
+
+  //      Debug.Log(mobilePlayerVec);
+       // Debug.Log(mobilePlayerShooterVec);
         if(WorldGen.tankPlayer==null){
             respawnCDText.GetComponent<Text>().text=((int)WorldGen.playerRespawnCD).ToString();
-            respawnCDText.SetActive(true);
+           // respawnCDText.SetActive(true);
             
         }else{
             respawnCDText.GetComponent<Text>().text="   ";
-            respawnCDText.SetActive(false);
+          //  respawnCDText.SetActive(false);
         }
         if(Input.GetKeyDown(KeyCode.Escape)){
-           Debug.Log("pause");
+        //   Debug.Log("pause");
             if(isPaused==false){
                 Pause();
             }else{
@@ -102,7 +162,7 @@ enemyLifeList.Add(a);
 
 
   void pauseButtonClick(){
-          Debug.Log("pause");
+      //    Debug.Log("pause");
             if(isPaused==false){
                isPaused=true;
 pauseMenuUI.SetActive(true);

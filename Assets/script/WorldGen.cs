@@ -11,7 +11,7 @@ public class WorldGen : MonoBehaviour
     public static ObjectPool<GameObject> playerPool;
     public static ObjectPool<GameObject> bulletPool;
     //public static ObjectPool<GameObject> 
-    public static List<effectItemBeh> effectItemList=new List<effectItemBeh>();
+    public static List<GameObject> effectItemList=new List<GameObject>();
     public float addEffectItemCD=4f;
    public GameObject brick;
    public GameObject stone;
@@ -21,7 +21,7 @@ public class WorldGen : MonoBehaviour
    public static int playerLifeCount=11;
    public static int enemyCount;
    public static int enemyOnWorldCount;
-   public static int enemyHomeCount=5;
+   public static int enemyHomeCount=2;
    public static int playerHomeCount=5;
    public static GameObject tankPlayer;
    public GameObject playerPrefab;
@@ -43,7 +43,8 @@ public class WorldGen : MonoBehaviour
     public string playerLifeCountString;
     public string worldwidthString;
     public static Tilemap tm;
-    public static Tile brickTile;
+    public static AnimatedTile waterTile;
+    public static RuleTile brickTile;
     public static Tile stoneTile;
     public static Tile leavesTile;
     public static Tile leavesTileCracked;
@@ -99,7 +100,8 @@ public class WorldGen : MonoBehaviour
         playerPool=new ObjectPool<GameObject>(CreatePlayer,GetPlayer,ReleasePlayer,DestroyPlayer,true,10,50);
         enemyPool=new ObjectPool<GameObject>(CreateEnemy,GetEnemy,ReleaseEnemy,DestroyEnemy,true,10,50);
 tm=GameObject.Find("Tilemap").GetComponent<Tilemap>();
-brickTile=Resources.Load<Tile>("textures/bricktile");
+waterTile=Resources.Load<AnimatedTile>("textures/watertile");
+brickTile=Resources.Load<RuleTile>("textures/brickruletile");
 leavesTile=Resources.Load<Tile>("textures/leavestile");
 stoneTile=Resources.Load<Tile>("textures/stonetile");
 leavesTileCracked=Resources.Load<Tile>("textures/leavescrackedtile");
@@ -116,7 +118,7 @@ if(enemyCount==0){
         if(playerLifeCount==0){
         playerLifeCount+=5;
     }
-        gameOverUI=GameObject.Find("Canvas").GetComponent<RectTransform>().GetChild(7).gameObject;
+        gameOverUI=GameObject.Find("gameOverUI");
         
 
       
@@ -127,12 +129,12 @@ if(enemyCount==0){
       
        //  worldwidth=10;
         gameOverUI.SetActive(false);
-         brick=Resources.Load<GameObject>("prefabs/brick");
-         stone=Resources.Load<GameObject>("prefabs/stone");
-         leaves=Resources.Load<GameObject>("prefabs/leaves");
+     //    brick=Resources.Load<GameObject>("prefabs/brick");
+       //  stone=Resources.Load<GameObject>("prefabs/stone");
+      //   leaves=Resources.Load<GameObject>("prefabs/leaves");
          playerPrefab=Resources.Load<GameObject>("prefabs/player");
          enemyPrefab=Resources.Load<GameObject>("prefabs/enemy");
-        //0=air,1=brick,2=stone,3=leaves,4enemyhome,5playerhome
+        //0=air,1=brick,2=stone,3=leaves,4enemyhome,5playerhome,6water
         for (int i=0;i<=2*worldwidth-1;i++){
             for(int j=0;j<=2*worldwidth-1;j++){
                 map[i,j]=2;
@@ -160,6 +162,13 @@ if(enemyCount==0){
                 }
             }
         }
+        for (int i=1;i<=2*worldwidth-2;i++){
+            for(int j=1;j<=2*worldwidth-2;j++){
+                if(Random.Range(0f,1f)<=worldBrickDensity/4f&&map[i,j]==0){
+                   map[i,j]=6; 
+                }
+            }
+        }
 int tmp=enemyHomeCount;
 while(tmp>0){
     Vector2 tmpEnemyHomePos=new Vector2((int)Random.Range(1f,2*worldwidth-2),(int)Random.Range(1f,2*worldwidth-2));
@@ -169,7 +178,7 @@ while(tmp>0){
         tmp--;
     }
 }
-int tmp2=enemyHomeCount;
+int tmp2=playerHomeCount;
 while(tmp2>0){
     Vector2 tmpPlayerHomePos=new Vector2((int)Random.Range(1f,2*worldwidth-2),(int)Random.Range(1f,2*worldwidth-2));
     if(map[(int)tmpPlayerHomePos.x,(int)tmpPlayerHomePos.y]!=4){
@@ -197,11 +206,14 @@ while(tmp2>0){
                 }else if(map[i,j]==5){
              //       Instantiate(leaves,new Vector3(i,j,0),transform.rotation);
                     tm.SetTile(new Vector3Int((int)i,(int)j,0),playerHomeTile);
+                }else if(map[i,j]==6){
+             //       Instantiate(leaves,new Vector3(i,j,0),transform.rotation);
+                    tm.SetTile(new Vector3Int((int)i,(int)j,0),waterTile);
                 }
                 
             }
         }
-        
+    //    tm.SetTile(new Vector3Int(0,0,0),waterTile);
         Time.timeScale=1;
         //Instantiate(enemyPrefab,new Vector2(transform.position.x-4.5f,transform.position.y-4.5f),transform.rotation);
        // Instantiate(enemyPrefab,new Vector2(transform.position.x-4.5f,transform.position.y-4.5f),transform.rotation);
@@ -214,20 +226,21 @@ while(tmp2>0){
         if(info.collider==null){
             GameObject a=Instantiate(effectItem,randomAddPos,Quaternion.Euler(0f,0f,0f));
             a.GetComponent<effectItemBeh>().effectId=(int)Random.Range(0f,1.99f);
-            Debug.Log("suceed");
+          //  Debug.Log("suceed");
             return;
         }else{
-            Debug.Log("failed");
+           // Debug.Log("failed");
             continue;
         }
           }
         
     }
   void FixedUpdate() {
+   // Debug.Log(effectItemList.Count);
     enemyOnWorldCount=GameObject.FindGameObjectsWithTag("enemy").Length;
-    Debug.Log("enemyPool active count:"+enemyPool.CountActive);
-Debug.Log("enemyPool inactive count:"+enemyPool.CountInactive);
-Debug.Log("enemyPool countAll:"+enemyPool.CountAll);
+   // Debug.Log("enemyPool active count:"+enemyPool.CountActive);
+//Debug.Log("enemyPool inactive count:"+enemyPool.CountInactive);
+//Debug.Log("enemyPool countAll:"+enemyPool.CountAll);
 if(create){
     enemyPool.Get();
     create=false;
@@ -244,7 +257,7 @@ if(create){
     }
 if(enemyCount==0&&enemyOnWorldCount==0){
     Debug.Log("你赢了");
-    gameOverUI.SetActive(true);
+ Invoke("OpenGameOverUI",0f);
 }
 
 if(enemyCount>0&&enemyOnWorldCount<enemyHomeCount){
@@ -268,14 +281,16 @@ if(enemyCount>0&&enemyOnWorldCount<enemyHomeCount){
         }else if(playerLifeCount==0){
     Debug.Log("你输了");
     lose=true;
-    gameOverUI.SetActive(true);
+    Invoke("OpenGameOverUI",0f);
         }
     }else{
         return;
     }
 
 }
-   
+   void OpenGameOverUI(){
+    gameOverUI.SetActive(true);
+   }
    
     }
 

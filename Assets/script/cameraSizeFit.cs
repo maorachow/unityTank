@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class cameraSizeFit : MonoBehaviour
 {
+
     public Camera mainCam;
    public float devWidth=20f;
    public float devHeight=20f;
-   public float targetOrthoSize;
+   public static float targetOrthoSize;
    public Vector2 newPos;
    public Transform playerTransform;
    public GameObject player;
@@ -18,10 +19,7 @@ public class cameraSizeFit : MonoBehaviour
         player=GameObject.FindGameObjectWithTag("Player");
 //this.gameObject.transform.position=new Vector2(WorldGen.worldwidth,WorldGen.worldwidth);
     }
- private void Awake()
-    {
-        //Adaptation();
-    }
+
     // Update is called once per frame
    /* void FixedUpdate()
     {
@@ -52,16 +50,35 @@ public class cameraSizeFit : MonoBehaviour
 
 }*/
 void Update(){
+
    if(player==null){
-    player=GameObject.FindGameObjectWithTag("Player");
+    GameObject[] playerPrefs=GameObject.FindGameObjectsWithTag("Player");
+    if(playerPrefs.Length>0){
+      for(int i=0;i<playerPrefs.Length;i++){
+        if(playerPrefs[i].activeInHierarchy==true){
+          player=playerPrefs[i];
+          return;
+        }
+      }
+    }
+   // player=GameObject.FindGameObjectsWithTag("Player");
+
+    return;
+   }
+   if(player.activeInHierarchy==false){
+    player=null;
+    return;
    }
     
      newPos = mainCam.ScreenToWorldPoint (Input.mousePosition);
 if(targetOrthoSize<=0f){
   targetOrthoSize=1f;
 }
+if(playermove.isUsingMobileControl==true){
+
+}
         //鼠标滚轮的效果
-        if (Input.GetAxis("Mouse ScrollWheel") < 0)
+        else if (Input.GetAxis("Mouse ScrollWheel") < 0)
         {
            
             if (targetOrthoSize<= 50f){
@@ -105,5 +122,8 @@ if(targetOrthoSize<=0f){
  
    
  
+}
+public static void mobileViewRangeSliderOnValueChanged(float value){
+  targetOrthoSize=value;
 }
 }

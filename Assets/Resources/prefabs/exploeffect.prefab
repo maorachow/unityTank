@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5816035981190297454}
   - component: {fileID: 5147316920142633385}
-  - component: {fileID: -9078352447524126875}
+  - component: {fileID: -3606438440679973992}
   m_Layer: 0
   m_Name: exploeffect
   m_TagString: Untagged
@@ -28,6 +28,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -43,6 +44,7 @@ SpriteRenderer:
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -83,7 +85,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &-9078352447524126875
+--- !u!114 &-3606438440679973992
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -92,15 +94,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 6632700992143690786}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d6736ef3b77c424bb37a480e6840fd2, type: 3}
+  m_Script: {fileID: 11500000, guid: b41d544eac97d194c92359e45d53022e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explo:
-  - {fileID: 21300000, guid: f7effd4b2ab92ea4290147e6c130a210, type: 3}
-  - {fileID: 21300000, guid: 3470bee9fe59f28438cc5b06e96b3655, type: 3}
-  - {fileID: 21300000, guid: 7cfc262f4e731de4fb2c507270698a44, type: 3}
-  - {fileID: 21300000, guid: cedb3711e5d2fab48be77f816b987983, type: 3}
-  - {fileID: 21300000, guid: cedb3711e5d2fab48be77f816b987983, type: 3}
-  sr: {fileID: 0}
-  delayTime: 0
-  frame: -1

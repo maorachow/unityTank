@@ -11,6 +11,7 @@ public class startGameUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Application.targetFrameRate = 144;
         settingsUI=GameObject.Find("settingsMenu");
         settingsButton=GameObject.Find("settingsButton").GetComponent<Button>();
         startGameButton=GameObject.Find("startGameButton").GetComponent<Button>();

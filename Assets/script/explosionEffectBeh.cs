@@ -30,7 +30,7 @@ public class explosionEffectBeh : MonoBehaviour
         frame=0;
         CancelInvoke("EffectFrame");
     }
-void EffectFrame(){
+public virtual void EffectFrame(){
     if(gameObject.activeInHierarchy!=true){
         return;
     }
@@ -49,9 +49,5 @@ void EffectFrame(){
           //  Destroy(this);
             
 }}
-    // Update is called once per frame
-    void Update()
-    {
-       
-    }
+
 }

@@ -12,9 +12,12 @@ public class effectItemBeh : MonoBehaviour
     public float itemLifeTime=10f;
     //0resistance1strength
     // Start is called before the first frame update
+    void OnEnable(){
+        itemEatenEffect=Resources.Load<GameObject>("prefabs/itemeateneffectprefab");
+    }
     void Start()
     {    
-        WorldGen.effectItemList.Add(this);
+        WorldGen.effectItemList.Add(this.gameObject);
         itemEatenEffect=Resources.Load<GameObject>("prefabs/itemeateneffectprefab");
         resistanceIcon=Resources.Load<Sprite>("textures/resistance");
         strengthIcon=Resources.Load<Sprite>("textures/strength");
@@ -27,6 +30,7 @@ public class effectItemBeh : MonoBehaviour
         itemLifeTime-=Time.deltaTime;
         sr.color=new Color(1,1,1,itemLifeTime/10f);
         if(itemLifeTime<=0f){
+            WorldGen.effectItemList.Remove(this.gameObject);
             Destroy(this.gameObject);
             Destroy(this);
         }
@@ -42,7 +46,7 @@ public class effectItemBeh : MonoBehaviour
             other.gameObject.GetComponent<playermove>().effectEatenId=effectId;
             other.gameObject.GetComponent<playermove>().effectTime=8f;
             Instantiate(itemEatenEffect,transform.position,transform.rotation);
-            WorldGen.effectItemList.Remove(this);
+            WorldGen.effectItemList.Remove(this.gameObject);
             Destroy(this.gameObject);
             Destroy(this);
         }
@@ -53,7 +57,7 @@ public class effectItemBeh : MonoBehaviour
             Instantiate(itemEatenEffect,transform.position,transform.rotation);    
             }
             
-            WorldGen.effectItemList.Remove(this);
+            WorldGen.effectItemList.Remove(this.gameObject);
             Destroy(this.gameObject);
             Destroy(this);
         }
